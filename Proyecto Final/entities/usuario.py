@@ -180,8 +180,8 @@ class Usuario:
             return cls(result['dni'], result['nombre'], result['apellido'], result['email'], result['telefono'],result['fecha_registro'])
         return None
     
-    @classmethod
-    def eliminar_usuario(cls, db, dni):
+    
+    def eliminar_usuario(self,db):
         """
         Eliminar un usuario de la base de datos
         Args:
@@ -189,8 +189,8 @@ class Usuario:
             dni (str): DNI del usuario
         """
         
-        if not cls.existe_usuario(db, dni):
-            print(f"Usuario con DNI {dni} no existe.")
+        if not Usuario.existe_usuario(db, self.dni):
+            print(f"Usuario con DNI {self.dni} no existe.")
             return
         
         query = """
@@ -198,7 +198,7 @@ class Usuario:
         WHERE dni = %s
         """
         
-        db.cursor.execute(query, (dni,))
+        db.cursor.execute(query, (self.dni,))
         db.conn.commit()
     
     @staticmethod
@@ -217,7 +217,7 @@ class Usuario:
         db.cursor.execute(query, (dni,))
         result = db.cursor.fetchone()
         
-        if not result:
+        if result is None:
             return False
         
         return True
@@ -236,8 +236,7 @@ class Usuario:
             db.cursor.execute(query, (nombre_nuevo, self.dni))
             db.conn.commit()
             
-        except Exception as e:
-            db.conn.rollback()
+        except ValueError as e:
             print(f"Error al actualizar el nombre: {e}")
         
     def actualizar_apellido(self, db, apellido_nuevo):
@@ -253,8 +252,7 @@ class Usuario:
             db.cursor.execute(query, (apellido_nuevo, self.dni))
             db.conn.commit()
             
-        except Exception as e:
-            db.conn.rollback()
+        except ValueError as e:
             print(f"Error al actualizar el apellido: {e}")
     
     def actualizar_telefono(self, db, telefono_nuevo):
@@ -269,8 +267,8 @@ class Usuario:
             db.cursor.execute(query, (telefono_nuevo, self.dni))
             db.conn.commit()
             
-        except Exception as e:
-            db.conn.rollback()
+        except ValueError as e:
+            
             print(f"Error al actualizar el telefono: {e}")
 
     def actualizar_email(self, db, email_nuevo):
@@ -291,8 +289,7 @@ class Usuario:
             db.cursor.execute(query, (email_nuevo, self.dni))
             db.conn.commit()
             
-        except Exception as e:
-            db.conn.rollback()
+        except ValueError as e:
             print(f"Error al actualizar el email: {e}")
     
     def actualizar_fecha_registro(self, db, fecha_registro_nueva):
@@ -313,13 +310,155 @@ class Usuario:
             db.cursor.execute(query, (fecha_registro_nueva, self.dni))
             db.conn.commit()
             
-        except Exception as e:
-            db.conn.rollback()
+        except ValueError as e:
             print(f"Error al actualizar la fecha de registro: {e}")
     
 
-    
-        
+    @classmethod
+    def crear_usuario_menu(cls,db):
+        print("--- Ingresar datos del usuario ---")
+        while True:
+            try:
+                dni = input("Ingrese DNI: ")
+                cls.validar_dni(dni)
+                if cls.existe_usuario(db, dni):
+                    raise ValueError(f"DNI:{dni} ya existe")
+                nombre = input("Ingrese Nombre: ")
+                cls.validar_nombre(nombre)
+                apellido = input("Ingrese Apellido: ")
+                cls.validar_apellido(apellido)
+                email = input("Ingrese Email: ")
+                cls.validar_email(email)
+                telefono = input("Ingrese Telefono: ")
+                cls.validar_telefono(telefono)
+                
+                break
             
-    
+            except ValueError as e:
+                print(f"Error al ingresar datos del usuario: {e}")
+                
+        instanciaUsuario = cls.crear_usuario(db, dni, nombre, apellido, email, telefono)
+        if instanciaUsuario is not None:
+            print(instanciaUsuario)
+        
+                    
+                    
+    @classmethod
+    def obtener_usuario_menu(cls,db):
+        while True:
+            try:
+                dni = input("Ingrese DNI: ")
+                Usuario.validar_dni(dni)
+                break
+            except ValueError as e:
+                print(f"Error al ingresar DNI: {e}")
+                
+        instanciaUsuario = cls.obtener_usuario(db, dni)
+        
+        if instanciaUsuario is not None:
+            print(instanciaUsuario)
+            
+        return instanciaUsuario
+        
 
+    @classmethod
+    def actualizar_nombre_menu(cls,db):
+        print("--- Actualizar nombre ---")
+        
+        instanciaUsuario = cls.obtener_usuario_menu(db)
+        # 53242345
+        if instanciaUsuario is not None:
+            while True:
+                try:
+                    nombre_nuevo = input("Ingrese nuevo nombre: ")
+                    instanciaUsuario.actualizar_nombre(db, nombre_nuevo)
+                    
+                    break
+                
+                except ValueError as e:
+                    print(f"Error al ingresar nuevo nombre: {e}")
+
+        print(instanciaUsuario)
+        
+    @classmethod
+    def actualizar_apellido_menu(cls,db):
+        print("--- Actualizar apellido ---")
+        
+        instanciaUsuario = cls.obtener_usuario_menu(db)
+        if instanciaUsuario is not None:
+            while True:
+                try:
+                    apellido_nuevo = input("Ingrese nuevo apellido: ")
+                    instanciaUsuario.actualizar_apellido(db, apellido_nuevo)
+                    
+                    break
+                
+                except ValueError as e:
+                    print(f"Error al ingresar nuevo apellido: {e}")
+        print(instanciaUsuario)
+    
+    @classmethod
+    def actualizar_email_menu(cls,db):
+        print("--- Actualizar email ---")
+        
+        instanciaUsuario = cls.obtener_usuario_menu(db)
+        if instanciaUsuario is not None:
+            while True:
+                try:
+                    email_nuevo = input("Ingrese nuevo email: ")
+                    instanciaUsuario.actualizar_email(db, email_nuevo)
+                    
+                    break
+                
+                except ValueError as e:
+                    print(f"Error al ingresar nuevo email: {e}")
+        print(instanciaUsuario)
+
+    @classmethod
+    def actualizar_telefono_menu(cls,db):
+        print("--- Actualizar telefono ---")
+        
+        instanciaUsuario = cls.obtener_usuario_menu(db)
+        if instanciaUsuario is not None:
+            while True:
+                try:
+                    telefono_nuevo = input("Ingrese nuevo telefono: ")
+                    instanciaUsuario.actualizar_telefono(db, telefono_nuevo)
+                    
+                    break
+                
+                except ValueError as e:
+                    print(f"Error al ingresar nuevo telefono: {e}")
+        print(instanciaUsuario)
+        
+    @classmethod
+    def eliminar_usuario_menu(cls,db):
+        print("--- Eliminar usuario ---")
+        
+        instanciaUsuario = cls.obtener_usuario_menu(db)
+        if instanciaUsuario is None:
+            return
+        
+        while True:
+            confirmacion = input("Estas seguro que deseas eliminar el usuario? (Y/N): ").lower()
+            if confirmacion.lower() in ['y','n']:
+                break
+            else:
+                print("Opcion invalida")
+                
+        if confirmacion.lower() == 'n':
+            return
+        
+        instanciaUsuario.eliminar_usuario(db)
+        print("Usuario eliminado")
+        
+    @staticmethod
+    def listar_usuarios_menu(db):
+        query = """
+        SELECT * FROM Usuarios
+        """
+        db.cursor.execute(query)
+        lista_usuarios = db.cursor.fetchall()
+        
+        for usuario in lista_usuarios:
+            print(f"{usuario['dni']} {usuario['nombre']} {usuario['apellido']}, {usuario['email']} - {usuario['telefono']} - {usuario['fecha_registro']}")

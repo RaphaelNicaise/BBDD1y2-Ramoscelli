@@ -123,39 +123,39 @@ def gestion_libros():
                         input("Presione una tecla para continuar...")
                     
                     case '3':
-                        
-                        clear_console()
-                        show_menu(DICT_OPCIONES_LIBROS_ACTUALIZAR)
-                        
-                        try:
-                            key = msvcrt.getch().decode('utf-8').lower()
-                        except UnicodeDecodeError as e:
-                            print("Invalid key")
+                        while True:
+                            clear_console()
+                            show_menu(DICT_OPCIONES_LIBROS_ACTUALIZAR)
                             
-                        if key in DICT_OPCIONES_LIBROS_ACTUALIZAR.keys():
-                            match key:
-                                case '1':
-                                    clear_console()
-                                    Libro.actualizar_titulo_menu(db)
-                                    print("Presione una tecla para continuar...")
-                                case '2':
-                                    clear_console()
-                                    Libro.actualizar_autor_menu(db)
-                                    print("Presione una tecla para continuar...")
-                                case '3':
-                                    clear_console()
-                                    Libro.actualizar_genero_menu(db)
-                                    print("Presione una tecla para continuar...")
-                                case '4':
-                                    clear_console()
-                                    Libro.actualizar_editorial_menu(db)
-                                    print("Presione una tecla para continuar...")
-                                case '5':
-                                    clear_console()
-                                    Libro.actualizar_año_publicacion_menu(db)
-                                    print("Presione una tecla para continuar...")
-                                case 'q':
-                                    break
+                            try:
+                                key = msvcrt.getch().decode('utf-8').lower()
+                            except UnicodeDecodeError as e:
+                                print("Invalid key")
+                                
+                            if key in DICT_OPCIONES_LIBROS_ACTUALIZAR.keys():
+                                match key:
+                                    case '1':
+                                        clear_console()
+                                        Libro.actualizar_titulo_menu(db)
+                                        print("Presione una tecla para continuar...")
+                                    case '2':
+                                        clear_console()
+                                        Libro.actualizar_autor_menu(db)
+                                        print("Presione una tecla para continuar...")
+                                    case '3':
+                                        clear_console()
+                                        Libro.actualizar_genero_menu(db)
+                                        print("Presione una tecla para continuar...")
+                                    case '4':
+                                        clear_console()
+                                        Libro.actualizar_editorial_menu(db)
+                                        print("Presione una tecla para continuar...")
+                                    case '5':
+                                        clear_console()
+                                        Libro.actualizar_año_publicacion_menu(db)
+                                        print("Presione una tecla para continuar...")
+                                    case 'q':
+                                        break
                     case '4':
                         
                         clear_console()
@@ -176,7 +176,87 @@ def gestion_libros():
 def gestion_usuarios():
     """Registrar nuevos libros, ver detalles, actualizar información y eliminar entradas.
     """
-    print("Gestion de Usuarios")
+    DICT_OPCIONES_USUARIOS = {
+        '1': 'Registrar nuevo usuario',
+        '2': 'Ver detalles de un usuario',
+        '3': 'Actualizar información de un usuario',
+        '4': 'Eliminar un usuario',
+        '5': 'Listar usuarios',
+        'q': '<- Volver al menu principal'
+    }
+    
+    DICT_OPCIONES_USUARIOS_ACTUALIZAR = {
+        '1': 'Actualizar nombre',
+        '2': 'Actualizar apellido',
+        '3': 'Actualizar email',
+        '4': 'Actualizar telefono',
+        'q': '<- Volver al menu anterior'
+    }
+    
+    while True:
+        clear_console()
+        show_menu(DICT_OPCIONES_USUARIOS)
+        
+        try:
+            key = msvcrt.getch().decode('utf-8').lower()
+        except UnicodeDecodeError as e:
+            print("Invalid key")
+            
+        if key in DICT_OPCIONES_USUARIOS.keys():
+            match key:
+                case '1':
+                    clear_console()
+                    Usuario.crear_usuario_menu(db)
+                    input("Presione una tecla para continuar...")
+                
+                case '2':
+                    clear_console()
+                    Usuario.obtener_usuario_menu(db)
+                    input("Presione una tecla para continuar...")
+                
+                case '3':
+                    while True:
+                        
+                        clear_console()
+                        show_menu(DICT_OPCIONES_USUARIOS_ACTUALIZAR)
+                        
+                        try:
+                            key = msvcrt.getch().decode('utf-8').lower()
+                        except UnicodeDecodeError as e:
+                            print("Invalid key")
+                        
+                        match key:
+                            case '1':
+                                clear_console()
+                                Usuario.actualizar_nombre_menu(db)
+                                input("Presione una tecla para continuar...")
+                            case '2':
+                                clear_console()
+                                Usuario.actualizar_apellido_menu(db)
+                                input("Presione una tecla para continuar...")
+                            
+                            case '3':
+                                clear_console()
+                                Usuario.actualizar_email_menu(db)
+                                input("Presione una tecla para continuar...")
+                            case '4':
+                                clear_console()
+                                Usuario.actualizar_telefono_menu(db)
+                                input("Presione una tecla para continuar...")
+                            case 'q':
+                                break   
+                
+                case '4':
+                    clear_console()
+                    Usuario.eliminar_usuario_menu(db)
+                    input("Presione una tecla para continuar...")
+                
+                case '5':
+                    clear_console()
+                    Usuario.listar_usuarios_menu(db)
+                    input("Presione una tecla para continuar...")
+                case 'q':
+                    break
     
 def reporte_morosos():
     print("Reporte de morosos")
