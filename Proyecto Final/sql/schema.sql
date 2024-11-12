@@ -29,11 +29,11 @@ CREATE INDEX idx_autor ON Libros(autor);
 CREATE TABLE Prestamos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     dni_usuario CHAR(20) NOT NULL,
-    libro_id INT NOT NULL,
+    lid INT NOT NULL,
     fecha_prestamo DATE NOT NULL,
     fecha_devolucion DATE,
     FOREIGN KEY (dni_usuario) REFERENCES Usuarios(dni) ON DELETE CASCADE,
-    FOREIGN KEY (libro_id) REFERENCES Libros(lid) ON DELETE CASCADE
+    FOREIGN KEY (lid) REFERENCES Libros(lid) ON DELETE CASCADE
 );
 
 CREATE TABLE Pagos (

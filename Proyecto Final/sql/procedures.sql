@@ -3,7 +3,7 @@ DROP PROCEDURE IF EXISTS insertar_libro;
 
 -- PROCEDURES
 
-DELIMITER 
+DELIMITER //
 CREATE PROCEDURE insertar_usuario(
     IN dni CHAR(20),
     IN nombre VARCHAR(50),
@@ -14,7 +14,7 @@ CREATE PROCEDURE insertar_usuario(
 BEGIN
     INSERT INTO usuarios (dni, nombre, apellido, email, telefono, fecha_registro)
     VALUES (dni, nombre, apellido, email, telefono, CURDATE());
-END 
+END //
 
 
 CREATE PROCEDURE insertar_libro(
@@ -27,4 +27,17 @@ CREATE PROCEDURE insertar_libro(
 BEGIN
     INSERT INTO libros (titulo, autor, genero, editorial, anio_publicacion)
     VALUES (titulo, autor, genero, editorial, anio_publicacion);
-END 
+END //
+
+
+DELIMITER //
+CREATE PROCEDURE insertar_prestamo(
+    IN dni_usuario CHAR(20),
+    IN lid INT,
+    IN fecha_prestamo DATE,
+    IN fecha_devolucion DATE
+)
+BEGIN
+    INSERT INTO prestamos (dni_usuario, lid, fecha_prestamo, fecha_devolucion)
+    VALUES (dni_usuario, lid, fecha_prestamo, fecha_devolucion);
+END //
