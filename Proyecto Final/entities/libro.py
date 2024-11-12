@@ -278,6 +278,7 @@ class Libro:
             print(f"Error al actualizar el año de publicacion del libro: {e}")
     
     def eliminar_libro(self, db):
+        # TODO CAMBIAR A CLASSMETHOD, QUE SE ELIMINE POR ID
         try:
             query = """
             DELETE FROM libros
@@ -334,6 +335,7 @@ class Libro:
             
         return instanciaLibro
     
+    @staticmethod
     def listar_libros_menu(db):
         query = """
         SELECT * FROM libros
@@ -427,7 +429,7 @@ class Libro:
             return
         
         while True:
-            confirmacion = input("Estas seguro que deseas eliminar el libro? (YN)")
+            confirmacion = input("Estas seguro que deseas eliminar el libro? (Y/N)")
             if confirmacion.lower() in ('y','n'):
                 break
             else:
