@@ -1,5 +1,5 @@
 import datetime as dt
-import msvcrt
+
 class Libro:
     def __init__(self, titulo:str, autor:str, genero:str=None, editorial:str=None, anio_publicacion=None,lid:str=None):
         
@@ -48,7 +48,7 @@ class Libro:
     def lid(self):
         return self.__lid
     
-    #Setters con validaciones
+    # Setters con validaciones
     @titulo.setter
     def titulo(self, titulo):
         self.validar_titulo(titulo)
@@ -76,37 +76,95 @@ class Libro:
         
     @lid.setter
     def lid(self, lid):
-        
         self.__lid = lid
         
     @staticmethod
-    def validar_titulo(titulo)->bool:
+    def validar_titulo(titulo: str):
+        """
+        Se le pasa como parametro un titulo y se validan,
+        las constraints de la tabla Libro, del campo titulo.
+        Args:
+            titulo (str): Titulo del libro
+        Raises:
+            ValueError: Si no cumple con las constraints
+        """
         if len(titulo) > 200 or titulo in ('',' '):
             raise ValueError("Titulo invalido")
     
     @staticmethod
-    def validar_autor(autor)->bool:
+    def validar_autor(autor: str):
+        """
+        Se le pasa como parametro un autor y se validan,
+        las constraints de la tabla Libro, del campo autor.
+        Args:
+            autor (str): Autor del libro 
+        Raises:
+            ValueError: Si no cumple con las constraints
+        Returns:
+            bool: Devuelve True si cumple con las constraints
+        """
         if len(autor) > 100 or autor in ('',' '):
             raise ValueError("Autor invalido")
     
     @staticmethod
-    def validar_genero(genero)->bool:
+    def validar_genero(genero: str):
+        """ Se le pasa como parametro un genero y se validan,
+        las constraints de la tabla Libro, del campo genero.
+        Args:
+            genero (str): Genero del libro
+        Raises:
+            ValueError: Si no cumple con las constraints
+        
+        """
+        
         if len(genero) > 50 or genero in ('',' '):
             raise ValueError("Genero invalido")
     
     @staticmethod
-    def validar_editorial(editorial)->bool:
+    def validar_editorial(editorial: str):
+        """ Se le pasa como parametro un editorial y se validan,
+        las constraints de la tabla Libro, del campo editorial.
+        Args:
+            editorial (str): Editorial del libro
+
+        Raises:
+            ValueError: Si no cumple con las constraints
+        """
         if len(editorial) > 100 or editorial in ('',' '):
             raise ValueError("Editorial invalido")
     
     @staticmethod
-    def validar_fecha_publicacion(anio_publicacion)->bool:
+    def validar_fecha_publicacion(anio_publicacion: int):
+        """ Se le pasa como parametro un año de publicacion y se validan,
+        las constraints de la tabla Libro, del campo anio_publicacion.
+
+        Args:
+            anio_publicacion (int): Año de publicacion del libro
+
+        Raises:
+            ValueError: Si no cumple con las constraints
+        """
         if anio_publicacion < 0 or anio_publicacion > dt.datetime.now().year:
             raise ValueError("Año de publicacion invalido")
     
     @classmethod
-    def crear_libro(cls, db, titulo, autor, genero, editorial, anio_publicacion):
+    def crear_libro(cls, db, titulo, autor, genero, editorial, anio_publicacion)->'Libro':
+        """
+        El init pero con la validacion de si el libro ya existe,
+        y la creacion sincronizada en la base de datos,
+        para mantener la integridad de los datos.
         
+        Args:
+            db (Database): Base de datos
+            titulo (str): Titulo del libro
+            autor (str): Autor del libro
+            genero (str): Genero del libro
+            editorial (str): Editorial del libro
+            anio_publicacion (int): Año de publicacion del libro
+            
+        Returns:
+            Libro: Devuelve la instancia del libro creado
+        """
         if cls.existe_libro(db, titulo, autor):
             print(f"El libro {titulo} de {autor} ya existe")
             return None
@@ -114,11 +172,14 @@ class Libro:
         try:
             
             instanciaLibro = cls(titulo, autor, genero, editorial, anio_publicacion)
+            
+            
             db.cursor.callproc("insertar_libro",(titulo, autor, genero, editorial, anio_publicacion))
             db.conn.commit()
             
-            # TODO: obtener el id del libro insertado
+            # Se obtiene el id del libro recien creado
             db.cursor.execute("SELECT lid FROM libros WHERE titulo = %s AND autor = %s", (titulo, autor))
+            # Se asigna el id al objeto, ya que se obtiene una vez creado en la base de datos
             instanciaLibro.lid = db.cursor.fetchone()['lid']
             
             
@@ -133,6 +194,11 @@ class Libro:
     def obtener_libro(cls, db, lid)->'Libro':
         """
         Obtiene un libro de la base de datos con el id especificado
+        Args:
+            db (Database): Base de datos
+            lid (str): ID del libro
+        Returns:
+            Libro: Devuelve la instancia del libro si existe, None si no
         """
         if not cls.existe_libro_id(db, lid):
             print(f"El libro con id {lid} no existe")
@@ -155,6 +221,7 @@ class Libro:
         Verifica que un libro exista en la base de datos con el titulo y autor especificados
         
         Args:
+            db (Database): Base de datos
             titulo (str): Titulo del libro
             autor (str, optional): Autor del libro
         Returns:
@@ -183,6 +250,7 @@ class Libro:
         """
         Verifica que un libro exista en la base de datos con el id especificado
         Args:
+            db (Database): Base de datos
             lid (str): ID del libro
         Returns:
             bool: True si el libro existe, False si no
@@ -203,6 +271,12 @@ class Libro:
         return True
     
     def actualizar_titulo(self, db, titulo_nuevo):
+        """
+        Actualiza el titulo del libro en la base de datos
+        Args:
+            db (Database): Base de datos
+            titulo_nuevo (str): Nuevo titulo del libro
+        """
         try:
             query = """
             UPDATE libros
@@ -218,6 +292,12 @@ class Libro:
             print(f"Error al actualizar el titulo del libro: {e}")
     
     def actualizar_autor(self, db, autor_nuevo):
+        """
+        Actualiza el autor del libro en la base de datos
+        Args:
+            db (Database): Base de datos
+            autor_nuevo (str): Nuevo autor del libro
+        """
         try:
             query = """
             UPDATE libros
@@ -233,6 +313,12 @@ class Libro:
             print(f"Error al actualizar el autor del libro: {e}")
     
     def actualizar_genero(self, db, genero_nuevo):
+        """
+        Actualiza el genero del libro en la base de datos
+        Args:
+            db (Database): Base de datos
+            genero_nuevo (str): Nuevo genero del libro
+        """
         try:
             query = """
             UPDATE libros
@@ -248,6 +334,12 @@ class Libro:
             print(f"Error al actualizar el genero del libro: {e}")
     
     def actualizar_editorial(self, db, editorial_nueva):
+        """
+        Actualiza la editorial del libro en la base de datos
+        Args:
+            db (Database): Base de datos
+            editorial_nueva (str): Nueva editorial del libro
+        """
         try:
             query = """
             UPDATE libros
@@ -263,6 +355,12 @@ class Libro:
             print(f"Error al actualizar la editorial del libro: {e}")
     
     def actualizar_anio_publicacion(self, db, anio_publicacion_nuevo):
+        """
+        Actualiza el año de publicacion del libro en la base de datos
+        Args:
+            db (Database): Base de datos
+            anio_publicacion_nuevo (int): Nuevo año de publicacion del libro
+        """
         try:
             query = """
             UPDATE libros
@@ -277,8 +375,10 @@ class Libro:
         except ValueError as e:
             print(f"Error al actualizar el año de publicacion del libro: {e}")
     
+    
     def eliminar_libro(self, db):
-        # TODO CAMBIAR A CLASSMETHOD, QUE SE ELIMINE POR ID
+        """ Metodo de instancia
+        Elimina el libro (self) de la base de datos"""
         try:
             query = """
             DELETE FROM libros
@@ -292,9 +392,15 @@ class Libro:
     
     
     # METODOS PARA EL MENU DE LA APP
+    # Estos metodos usan las funcionalidades anteriores, pero interactivamente para el usuario
     
     @classmethod
     def crear_libro_menu(cls,db):
+        """Despliega un menu interactivo para que el usuario ingrese los datos de un libro
+
+        Args:
+            db (Database): _description_
+        """
         print("--- Ingresar datos del libro ---")
         while True:
             try:
@@ -319,6 +425,14 @@ class Libro:
         
     @classmethod
     def obtener_libro_menu(cls, db):
+        """Despliega un menu interactivo para que el usuario ingrese el id de un libro y lo busque en la base de datos
+
+        Args:
+            db (Database): _description_
+
+        Returns:
+            Libro: Devuelve la instancia del libro si existe, None si no
+        """
         print("--- Buscar libro ---")
         while True:
             try:
@@ -335,21 +449,17 @@ class Libro:
             
         return instanciaLibro
     
-    @staticmethod
-    def listar_libros_menu(db):
-        query = """
-        SELECT * FROM libros
-        """
-        db.cursor.execute(query)
-        lista_libros = db.cursor.fetchall()
-        for libro in lista_libros:
-            print(f"{libro['lid']} {libro['titulo']}({libro['genero']}): {libro['autor']} Editorial: {libro['editorial']} {libro['anio_publicacion']}")
             
     @classmethod
     def actualizar_titulo_menu(cls,db):
+        """Despliega un menu interactivo para que el usuario actualice el titulo de un libro
+
+        Args:
+            db (Database): _description_
+        """
         print("--- Actualizar titulo ---")
           
-        instanciaLibro = cls.obtener_libro_menu(db)
+        instanciaLibro = cls.obtener_libro_menu(db) # Se usa el metodo menu para obtener el libro
         
         if instanciaLibro is not None:
             while True:
@@ -362,9 +472,13 @@ class Libro:
     
     @classmethod
     def actualizar_autor_menu(cls,db):
+        """ Despliega un menu interactivo para que el usuario actualice el autor de un libro
+        Args:
+            db (Database): _description_
+        """
         print("--- Actualizar autor ---")
           
-        instanciaLibro = cls.obtener_libro_menu(db)
+        instanciaLibro = cls.obtener_libro_menu(db) # Se usa el metodo menu para obtener el libro
         
         if instanciaLibro is not None:
             while True:
@@ -377,9 +491,14 @@ class Libro:
     
     @classmethod          
     def actualizar_genero_menu(cls,db):
+        """ Despliega un menu interactivo para que el usuario actualice el genero de un libro
+
+        Args:
+            db (Database): _description_
+        """
         print("--- Actualizar genero ---")
           
-        instanciaLibro = cls.obtener_libro_menu(db)
+        instanciaLibro = cls.obtener_libro_menu(db) # Se usa el metodo menu para obtener el libro
         
         if instanciaLibro is not None:
             while True:
@@ -392,9 +511,14 @@ class Libro:
                     
     @classmethod                
     def actualizar_editorial_menu(cls,db):
+        """  Despliega un menu interactivo para que el usuario actualice la editorial de un libro
+
+        Args:
+            db (Database): _description_
+        """
         print("--- Actualizar editorial ---")
           
-        instanciaLibro = cls.obtener_libro_menu(db)
+        instanciaLibro = cls.obtener_libro_menu(db) # Se usa el metodo menu para obtener el libro
         
         if instanciaLibro is not None:
             while True:
@@ -407,9 +531,13 @@ class Libro:
     
     @classmethod     
     def actualizar_año_publicacion_menu(cls,db):
+        """ Despliega un menu interactivo para que el usuario actualice el año de publicacion de un libro
+        Args:
+            db (Database): _description_
+        """
         print("--- Actualizar año de publicacion ---")
           
-        instanciaLibro = cls.obtener_libro_menu(db)
+        instanciaLibro = cls.obtener_libro_menu(db) # Se usa el metodo menu para obtener el libro
         
         if instanciaLibro is not None:
             while True:
@@ -422,9 +550,14 @@ class Libro:
     
     @classmethod
     def eliminar_libro_menu(cls, db):
+        """ Despliega un menu interactivo para que el usuario elimine un libro de la base de datos
+
+        Args:
+            db (Database): _description_
+        """
         print("--- Eliminar libro ---")
-          
-        instanciaLibro = cls.obtener_libro_menu(db)
+        
+        instanciaLibro = cls.obtener_libro_menu(db) # Se usa el metodo menu para obtener el libro
         if instanciaLibro is None:
             return
         
@@ -441,4 +574,17 @@ class Libro:
         instanciaLibro.eliminar_libro(db)
         print("Libro eliminado")
         
-        
+    @staticmethod
+    def listar_libros_menu(db):
+        """
+        Lista todos los libros de la base de datos
+        Args:
+            db (Database): Base de datos
+        """
+        query = """
+        SELECT * FROM libros
+        """
+        db.cursor.execute(query)
+        lista_libros = db.cursor.fetchall()
+        for libro in lista_libros:
+            print(f"{libro['lid']} {libro['titulo']}({libro['genero']}): {libro['autor']} Editorial: {libro['editorial']} {libro['anio_publicacion']}")

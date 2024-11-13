@@ -17,24 +17,65 @@ print(r"""
 |_.__/ |_||_.__/ |_||_| \___/  \__| \___| \___| \__,_|
 
 """)
-time.sleep(2)
+
+time.sleep(1.5)
 
 def clear_console():
-    # Si el sistema es Windows
+    """
+    funcion que limpia la consola de acuerdo al sistema operativo.
+    """
     if os.name == 'nt':
         os.system('cls')
     # Para sistemas Unix (Linux, MacOS)
     else:
         os.system('clear')
         
-db = Database()
+db = Database() # Instancia de la clase Database
 
+
+# Diccionarios con las opciones de cada
 DICT_OPCIONES = {
     '1': 'Gestion de Libros',
     '2': 'Gestion de Usuarios',
     '3': 'Reporte de Morosos',
     'q': 'Salir'
 }
+
+DICT_OPCIONES_LIBROS = {
+    '1': 'Registrar nuevo libro',
+    '2': 'Ver detalles de un libro',
+    '3': 'Actualizar información de un libro',
+    '4': 'Eliminar un libro',
+    '5': 'Listar libros',
+    'q': '<- Volver al menu principal'
+}
+    
+DICT_OPCIONES_LIBROS_ACTUALIZAR = {
+    '1': 'Actualizar titulo',
+    '2': 'Actualizar autor',
+    '3': 'Actualizar Genero',
+    '4': 'Actualizar editorial',
+    '5': 'Actualizar año de publicación',
+    'q': '<- Volver al menu anterior'
+}
+
+DICT_OPCIONES_USUARIOS = {
+    '1': 'Registrar nuevo usuario',
+    '2': 'Ver detalles de un usuario',
+    '3': 'Actualizar información de un usuario',
+    '4': 'Eliminar un usuario',
+    '5': 'Listar usuarios',
+    'q': '<- Volver al menu principal'
+}
+    
+DICT_OPCIONES_USUARIOS_ACTUALIZAR = {
+    '1': 'Actualizar nombre',
+    '2': 'Actualizar apellido',
+    '3': 'Actualizar email',
+    '4': 'Actualizar telefono',
+    'q': '<- Volver al menu anterior'
+}
+
 
 def show_menu(DICT):
     """
@@ -46,8 +87,9 @@ def show_menu(DICT):
         print(f"{key}. {value}")
     print("Seleccione una opcion: ", end='\n')
 
-def menu(): # Ejecuta el menu de opciones y las acciones correspondientes
-    
+def menu(): 
+    # Ejecuta el menu de opciones y las acciones correspondientes
+
     while True:
         
         clear_console()
@@ -80,23 +122,6 @@ def menu(): # Ejecuta el menu de opciones y las acciones correspondientes
 def gestion_libros():
     """Agregar, ver, actualizar o eliminar información de usuarios."""
     
-    DICT_OPCIONES_LIBROS = {
-        '1': 'Registrar nuevo libro',
-        '2': 'Ver detalles de un libro',
-        '3': 'Actualizar información de un libro',
-        '4': 'Eliminar un libro',
-        '5': 'Listar libros',
-        'q': '<- Volver al menu principal'
-    }
-    
-    DICT_OPCIONES_LIBROS_ACTUALIZAR = {
-        '1': 'Actualizar titulo',
-        '2': 'Actualizar autor',
-        '3': 'Actualizar Genero',
-        '4': 'Actualizar editorial',
-        '5': 'Actualizar año de publicación',
-        'q': '<- Volver al menu anterior'
-    }
     while True:
         
         clear_console()
@@ -173,25 +198,11 @@ def gestion_libros():
         else:
             print("Invalid key")
     
+# -- 2 --
+
 def gestion_usuarios():
     """Registrar nuevos libros, ver detalles, actualizar información y eliminar entradas.
     """
-    DICT_OPCIONES_USUARIOS = {
-        '1': 'Registrar nuevo usuario',
-        '2': 'Ver detalles de un usuario',
-        '3': 'Actualizar información de un usuario',
-        '4': 'Eliminar un usuario',
-        '5': 'Listar usuarios',
-        'q': '<- Volver al menu principal'
-    }
-    
-    DICT_OPCIONES_USUARIOS_ACTUALIZAR = {
-        '1': 'Actualizar nombre',
-        '2': 'Actualizar apellido',
-        '3': 'Actualizar email',
-        '4': 'Actualizar telefono',
-        'q': '<- Volver al menu anterior'
-    }
     
     while True:
         clear_console()

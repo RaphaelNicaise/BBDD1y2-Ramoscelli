@@ -2,7 +2,7 @@ import mysql.connector
 
 class Database:
     def __init__(self):
-        # TODO: Esconder credencialaes
+        
         self.conn = mysql.connector.connect(
             host="localhost",
             user="root",

@@ -33,6 +33,7 @@ class Usuario:
     def __eq__(self, otroUsuario):
         return self.dni == otroUsuario.dni
     
+    # Getters
     @property
     def dni(self):
         return self.__dni
@@ -57,7 +58,7 @@ class Usuario:
     def fecha_registro(self):
         return self.__fecha_registro
     
-    # SETTERS QUE ANTES DE ASIGNAR AL ATRIBUTO PRIVADO, VALIDAN LOS DATOS
+    # Setters con validacion de datos
     @nombre.setter
     def nombre(self, nombre):
         self.validar_nombre(nombre)
