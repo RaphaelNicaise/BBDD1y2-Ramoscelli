@@ -1,5 +1,6 @@
 
-DROP TABLE IF EXISTS Pagos;
+
+DROP TABLE IF EXISTS Cuotas;
 DROP TABLE IF EXISTS Prestamos;
 DROP TABLE IF EXISTS Libros;
 DROP TABLE IF EXISTS Usuarios;
@@ -36,11 +37,13 @@ CREATE TABLE Prestamos (
     FOREIGN KEY (lid) REFERENCES Libros(lid) ON DELETE CASCADE
 );
 
-CREATE TABLE Pagos (
+CREATE TABLE Cuotas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     dni_usuario CHAR(20) NOT NULL,
     monto DECIMAL(10, 2) NOT NULL,
-    fecha_pago DATE NOT NULL,
+    mes INT NOT NULL,
+    anio INT NOT NULL,
+    estado_pago ENUM('PENDIENTE', 'PAGADO') DEFAULT 'PENDIENTE',
     FOREIGN KEY (dni_usuario) REFERENCES Usuarios(dni) ON DELETE CASCADE
 );
 

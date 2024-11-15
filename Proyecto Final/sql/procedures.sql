@@ -1,5 +1,8 @@
 DROP PROCEDURE IF EXISTS insertar_usuario;
 DROP PROCEDURE IF EXISTS insertar_libro;
+DROP PROCEDURE IF EXISTS insertar_prestamo;
+DROP PROCEDURE IF EXISTS insertar_cuota;
+DROP PROCEDURE IF EXISTS existe_cuota;
 
 -- PROCEDURES
 
@@ -41,3 +44,16 @@ BEGIN
     INSERT INTO prestamos (dni_usuario, lid, fecha_prestamo, fecha_devolucion)
     VALUES (dni_usuario, lid, fecha_prestamo, fecha_devolucion);
 END //
+
+DELIMITER //
+CREATE PROCEDURE insertar_cuota(
+    IN dni_usuario CHAR(20),
+    IN monto DECIMAL(10, 2),
+    IN mes INT,
+    IN anio INT
+)
+BEGIN
+    INSERT INTO cuotas (dni_usuario, monto, mes, anio)
+    VALUES (dni_usuario, monto, mes, anio);
+END //
+
