@@ -314,7 +314,7 @@ class Usuario:
         except ValueError as e:
             print(f"Error al actualizar la fecha de registro: {e}")
     
-
+    
     @classmethod
     def crear_usuario_menu(cls,db):
         print("--- Ingresar datos del usuario ---")
@@ -462,4 +462,22 @@ class Usuario:
         lista_usuarios = db.cursor.fetchall()
         
         for usuario in lista_usuarios:
+            print(f"{usuario['dni']} {usuario['nombre']} {usuario['apellido']}, {usuario['email']} - {usuario['telefono']} - {usuario['fecha_registro']}")
+            
+    @staticmethod
+    def buscar_usuario_filtrado_menu(db):
+        filtro = input("Ingrese una busqueda: ").lower()
+        query = f"""
+        SELECT * FROM usuarios
+        WHERE LOWER(dni) LIKE '%{filtro}%' OR LOWER(nombre) LIKE '%{filtro}%' OR LOWER(apellido) LIKE '%{filtro}%' OR LOWER(email) LIKE '%{filtro}%' OR LOWER(telefono) LIKE '%{filtro}%'
+        """
+
+        db.cursor.execute(query)
+        usuarios = db.cursor.fetchall()
+    
+        if usuarios == []:
+            print("No se encontraron libros")
+            return
+        
+        for usuario in usuarios:
             print(f"{usuario['dni']} {usuario['nombre']} {usuario['apellido']}, {usuario['email']} - {usuario['telefono']} - {usuario['fecha_registro']}")
