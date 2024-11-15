@@ -25,11 +25,11 @@ class Libro:
     
     # Getters
     @property
-    def titulo(self):
+    def titulo(self)->str:
         return self.__titulo
     
     @property
-    def autor(self):
+    def autor(self)->str:
         return self.__autor
     
     @property
@@ -37,15 +37,15 @@ class Libro:
         return self.__genero
     
     @property
-    def editorial(self):
+    def editorial(self)->str:
         return self.__editorial
     
     @property
-    def anio_publicacion(self):
+    def anio_publicacion(self)->str:
         return self.__anio_publicacion
     
     @property
-    def lid(self):
+    def lid(self)->str:
         return self.__lid
     
     # Setters con validaciones
@@ -587,4 +587,23 @@ class Libro:
         db.cursor.execute(query)
         lista_libros = db.cursor.fetchall()
         for libro in lista_libros:
+            print(f"{libro['lid']} {libro['titulo']}({libro['genero']}): {libro['autor']} Editorial: {libro['editorial']} {libro['anio_publicacion']}")
+
+    @staticmethod
+    def buscar_libro_filtrado_menu(db):
+        
+        palabra = input("Ingrese una busqueda: ").lower()
+        query = f"""
+            SELECT * FROM libros
+            WHERE lower(titulo) LIKE '%{palabra}%' OR lower(autor) LIKE '%{palabra}%' OR lower(genero) LIKE '%{palabra}%' OR lower(editorial) LIKE '%{palabra}%'
+            """
+
+        db.cursor.execute(query)
+        libros = db.cursor.fetchall()
+    
+        if libros == []:
+            print("No se encontraron libros")
+            return
+        
+        for libro in libros:
             print(f"{libro['lid']} {libro['titulo']}({libro['genero']}): {libro['autor']} Editorial: {libro['editorial']} {libro['anio_publicacion']}")
