@@ -23,6 +23,21 @@ class Libro:
     def __str__(self):
         return f"{self.lid} {self.titulo}({self.genero}): {self.autor} Editorial: {self.editorial} {self.anio_publicacion}"  
     
+    def toDict(self):
+        return {
+            "titulo": self.titulo,
+            "autor": self.autor,
+            "genero": self.genero,
+            "editorial": self.editorial,
+            "anio_publicacion": self.anio_publicacion,
+            "lid": self.lid
+        }
+        
+    @classmethod
+    def fromDict(cls,data):
+        return cls(data['titulo'], data['autor'], data['genero'], data['editorial'], data['anio_publicacion'], data['lid'])
+        
+    
     # Getters
     @property
     def titulo(self)->str:
@@ -433,7 +448,6 @@ class Libro:
         Returns:
             Libro: Devuelve la instancia del libro si existe, None si no
         """
-        print("--- Buscar libro ---")
         while True:
             try:
                 lid = int(input("Ingrese el ID del libro: "))

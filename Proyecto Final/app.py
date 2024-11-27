@@ -1,8 +1,8 @@
 import msvcrt
-import os
 import datetime as dt
 import time
 
+from utils import clear_console, espera_tecla
 from database import Database
 from entities.usuario import Usuario
 from entities.libro import Libro
@@ -21,20 +21,9 @@ print(r"""
 
 time.sleep(1.5)
 
-def clear_console():
-    """
-    funcion que limpia la consola de acuerdo al sistema operativo.
-    """
-    if os.name == 'nt':
-        os.system('cls')
-    # Para sistemas Unix (Linux, MacOS)
-    else:
-        os.system('clear')
-        
 db = Database() # Instancia de la clase Database
 
-
-# Diccionarios con las opciones de cada
+# Diccionarios con las opciones de cada menu
 DICT_OPCIONES = {
     '1': 'Gestion de Libros',
     '2': 'Gestion de Usuarios',
@@ -163,13 +152,13 @@ def gestion_libros():
                         
                         clear_console()
                         Libro.crear_libro_menu(db)
-                        input("Presione una tecla para continuar...")
+                        espera_tecla()
                     
                     case '2':
                     
                         clear_console()
                         Libro.obtener_libro_menu(db)
-                        input("Presione una tecla para continuar...")
+                        espera_tecla()
                     
                     case '3':
                         while True:
@@ -186,41 +175,41 @@ def gestion_libros():
                                     case '1':
                                         clear_console()
                                         Libro.actualizar_titulo_menu(db)
-                                        print("Presione una tecla para continuar...")
+                                        espera_tecla()
                                     case '2':
                                         clear_console()
                                         Libro.actualizar_autor_menu(db)
-                                        print("Presione una tecla para continuar...")
+                                        espera_tecla()
                                     case '3':
                                         clear_console()
                                         Libro.actualizar_genero_menu(db)
-                                        print("Presione una tecla para continuar...")
+                                        espera_tecla()
                                     case '4':
                                         clear_console()
                                         Libro.actualizar_editorial_menu(db)
-                                        print("Presione una tecla para continuar...")
+                                        espera_tecla()
                                     case '5':
                                         clear_console()
                                         Libro.actualizar_año_publicacion_menu(db)
-                                        print("Presione una tecla para continuar...")
+                                        espera_tecla()
                                     case 'q':
                                         break
                     case '4':
                         
                         clear_console()
                         Libro.eliminar_libro_menu(db)
-                        input("Presione una tecla para continuar...")
+                        espera_tecla()
                     
                     case '5':
                         
                         clear_console()
                         Libro.listar_libros_menu(db)
-                        input("Presione una tecla para continuar...")
+                        espera_tecla()
                     
                     case '6':
                         clear_console()
                         Libro.buscar_libro_filtrado_menu(db)
-                        input("Presione una tecla para continuar...")
+                        espera_tecla()
                     case 'q':
                         break      
         else:
@@ -246,12 +235,12 @@ def gestion_usuarios():
                 case '1':
                     clear_console()
                     Usuario.crear_usuario_menu(db)
-                    input("Presione una tecla para continuar...")
+                    espera_tecla()
                 
                 case '2':
                     clear_console()
                     Usuario.obtener_usuario_menu(db)
-                    input("Presione una tecla para continuar...")
+                    espera_tecla()
                 
                 case '3':
                     while True:
@@ -268,36 +257,36 @@ def gestion_usuarios():
                             case '1':
                                 clear_console()
                                 Usuario.actualizar_nombre_menu(db)
-                                input("Presione una tecla para continuar...")
+                                espera_tecla()
                             case '2':
                                 clear_console()
                                 Usuario.actualizar_apellido_menu(db)
-                                input("Presione una tecla para continuar...")
+                                espera_tecla()
                             
                             case '3':
                                 clear_console()
                                 Usuario.actualizar_email_menu(db)
-                                input("Presione una tecla para continuar...")
+                                espera_tecla()
                             case '4':
                                 clear_console()
                                 Usuario.actualizar_telefono_menu(db)
-                                input("Presione una tecla para continuar...")
+                                espera_tecla()
                             case 'q':
                                 break   
                 
                 case '4':
                     clear_console()
                     Usuario.eliminar_usuario_menu(db)
-                    input("Presione una tecla para continuar...")
+                    espera_tecla()
                 
                 case '5':
                     clear_console()
                     Usuario.listar_usuarios_menu(db)
-                    input("Presione una tecla para continuar...")
+                    espera_tecla()
                 case '6':
                     clear_console()
                     Usuario.buscar_usuario_filtrado_menu(db)
-                    input("Presione una tecla para continuar...")
+                    espera_tecla()
                 case 'q':
                     break
   
@@ -318,19 +307,19 @@ def manejo_de_prestamos():
                 case '1':
                     clear_console()
                     Prestamo.crear_prestamo_menu(db)
-                    input("Presione una tecla para continuar...")
+                    espera_tecla()
                 case '2':
                     clear_console()
                     Prestamo.obtener_prestamo_menu(db)
-                    input("Presione una tecla para continuar...")
+                    espera_tecla()
                 case '3':
                     clear_console()
                     Prestamo.obtener_lista_prestamos_menu(db)
-                    input("Presione una tecla para continuar...")
+                    espera_tecla()
                 case '4':
                     clear_console()
                     Prestamo.calcular_multa_menu(db)
-                    input("Presione una tecla para continuar...")
+                    espera_tecla()
                 case 'q':
                     break
       
@@ -356,15 +345,15 @@ def manejo_cuotas():
                 case '1':
                     clear_console()
                     Cuota.crear_cuota_menu(db)
-                    input("Presione una tecla para continuar...")
+                    espera_tecla()
                 case '2':
                     clear_console()
                     Cuota.registrar_pago_cuota_menu(db)
-                    input("Presione una tecla para continuar...")
+                    espera_tecla()
                 case '3':
                     clear_console()
                     Cuota.obtener_cuota_menu(db)
-                    input("Presione una tecla para continuar...")
+                    espera_tecla()
                 case 'q':
                     break
 

@@ -37,12 +37,11 @@ DELIMITER //
 CREATE PROCEDURE insertar_prestamo(
     IN dni_usuario CHAR(20),
     IN lid INT,
-    IN fecha_prestamo DATE,
-    IN fecha_devolucion DATE
+    IN fecha_prestamo DATE
 )
 BEGIN
-    INSERT INTO prestamos (dni_usuario, lid, fecha_prestamo, fecha_devolucion)
-    VALUES (dni_usuario, lid, fecha_prestamo, fecha_devolucion);
+    INSERT INTO prestamos (dni_usuario, lid, fecha_prestamo)
+    VALUES (dni_usuario, lid, fecha_prestamo);
 END //
 
 DELIMITER //
