@@ -33,6 +33,20 @@ class Usuario:
     def __eq__(self, otroUsuario):
         return self.dni == otroUsuario.dni
     
+    @classmethod
+    def fromDict(cls,data):
+        return cls(data['dni'],data['nombre'],data['apellido'],data['email'],data['telefono'],data['fecha_registro'])
+    
+    def toDict(self)->dict:
+        return {
+            "dni": self.dni,
+            "nombre": self.nombre,
+            "apellido": self.apellido,
+            "email": self.email,
+            "telefono": self.telefono,
+            "fecha_registro": self.fecha_registro
+        }
+    
     # Getters
     @property
     def dni(self):
@@ -461,8 +475,9 @@ class Usuario:
         db.cursor.execute(query)
         lista_usuarios = db.cursor.fetchall()
         
-        for usuario in lista_usuarios:
-            print(f"{usuario['dni']} {usuario['nombre']} {usuario['apellido']}, {usuario['email']} - {usuario['telefono']} - {usuario['fecha_registro']}")
+        for usuario_dict in lista_usuarios:
+            usuario = Usuario.fromDict(usuario_dict)
+            print(usuario)
             
     @staticmethod
     def buscar_usuario_filtrado_menu(db):
@@ -476,8 +491,9 @@ class Usuario:
         usuarios = db.cursor.fetchall()
     
         if usuarios == []:
-            print("No se encontraron libros")
+            print("No se encontraron usuarios")
             return
         
-        for usuario in usuarios:
-            print(f"{usuario['dni']} {usuario['nombre']} {usuario['apellido']}, {usuario['email']} - {usuario['telefono']} - {usuario['fecha_registro']}")
+        for usuario_dict in usuarios:
+            usuario = Usuario.fromDict(usuario_dict)
+            print(usuario)
