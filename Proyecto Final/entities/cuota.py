@@ -1,7 +1,9 @@
 from entities.usuario import Usuario
+from enum import Enum
+
 
 class Cuota:
-    def __init__(self,dni_usuario:str, monto:float ,mes:int ,anio:int, estado_pago:str=None, id_cuota:int=None):
+    def __init__(self,dni_usuario:str, monto:float ,mes:int ,anio:int, estado_pago:str='PENDIENTE', id_cuota:int=None):
         
         self.validar_monto(monto)
         self.validar_mes(mes)
@@ -20,6 +22,25 @@ class Cuota:
     
     def __str__(self):
         return f'Cuota: {self.__id_cuota} - DNI Usuario: {self.__dni_usuario} - Monto: {self.__monto} - Mes: {self.__mes} - Año: {self.__anio} - Estado de Pago: {self.__estado_pago}'
+    
+    def __eq__(self, otraCuota:'Cuota'):
+        return self.dni_usuario == otraCuota.dni_usuario and \
+               self.mes == otraCuota.mes and \
+               self.anio == otraCuota.anio
+    
+    @classmethod
+    def fromDict(cls,data)->'Cuota':
+        return cls(data['dni_usuario'],float(data['monto']),data['mes'],data['anio'],data['estado_pago'],data['id'])
+    
+    def toDict(self)->dict:
+        return {
+            "dni_usuario": self.dni_usuario,
+            "monto": self.monto,
+            "mes": self.mes,
+            "anio": self.anio,
+            "estado_pago": self.estado_pago,
+            "id": self.id_cuota
+        }
     
     # Getters    
     @property
@@ -116,29 +137,46 @@ class Cuota:
         instanciaCuota.id_cuota = db.cursor.fetchone()['id']
         return instanciaCuota
     
-    @classmethod
-    def existe_cuota(cls,db,id_usuario,mes,anio)->bool:
+    @staticmethod
+    def existe_cuota(db,dni_usuario,mes,anio)->bool:
         query = """
         SELECT 1 FROM cuotas WHERE dni_usuario = %s AND mes = %s AND anio = %s
         """
         
-        db.cursor.execute(query,(id_usuario,mes,anio))
+        db.cursor.execute(query,(dni_usuario,mes,anio))
         return db.cursor.fetchone() is not None
         
     
     @classmethod
-    def registrar_pago_cuota(cls,db,id_usuario,mes,anio):
-        query = 'UPDATE cuotas SET estado_pago = "PAGADO" WHERE dni_usuario = %s AND mes = %s AND anio = %s'
-        db.cursor.execute(query,(id_usuario,mes,anio))
-        db.conn.commit()
+    def registrar_pago_cuota(cls,db,dni_usuario,mes,anio)->bool:
+        cuota = cls.obtener_cuota(db, dni_usuario, mes, anio)
+        if cuota is None:
+            print("No existe esta cuota")
+            return False
         
-    @classmethod
-    def obtener_cuota(cls,db,id_usuario,mes,anio):
-        query = 'SELECT * FROM cuotas WHERE dni_usuario = %s AND mes = %s AND anio = %s'
-        db.cursor.execute(query,(id_usuario,mes,anio))
-        result = db.cursor.fetchone()
-        print(result)
+        if cuota.estado_pago == 'PAGADO':
+            return False
+        
+        query = 'UPDATE cuotas SET estado_pago = "PAGADO" WHERE dni_usuario = %s AND mes = %s AND anio = %s'
+        db.cursor.execute(query, (dni_usuario, mes, anio))
+        db.conn.commit()
+        return True
     
+    @classmethod
+    def obtener_cuota(cls,db,dni_usuario,mes,anio):
+        try:
+            query = 'SELECT * FROM cuotas WHERE dni_usuario = %s AND mes = %s AND anio = %s'
+        
+            if not cls.existe_cuota(db, dni_usuario, mes,anio):
+                print("No existe esta cuota")
+                return None
+        
+            db.cursor.execute(query,(dni_usuario,mes,anio))
+            cuota_dict = db.cursor.fetchone()
+            cuota = cls.fromDict(cuota_dict)
+            return cuota
+        except ValueError as e:
+            print(f'Error al obtener cuota: {e}')
     # MENU
     
     @classmethod 
@@ -149,6 +187,7 @@ class Cuota:
             try:
                 dni_usuario = input('Ingrese el DNI del usuario: ')
                 # Verificamos si el usuario existe en la base de datos
+                Usuario.validar_dni(dni_usuario)
                 if not Usuario.existe_usuario(db, dni_usuario):
                     print("El usuario con el DNI ingresado no existe.")
                     continue  # Volver a pedir el DNI
@@ -175,11 +214,55 @@ class Cuota:
         
     @classmethod
     def obtener_cuota_menu(cls,db):
-        pass
-    
+        while True:
+            try:
+                dni_usuario = input("Ingrese DNI: ")
+                Usuario.validar_dni(dni_usuario)
+                
+                if not Usuario.existe_usuario(db, dni_usuario):
+                    print("El usuario con el DNI ingresado no existe.")
+                    continue
+                
+                mes = int(input('Ingrese el mes de la cuota: '))
+                cls.validar_mes(mes)
+                
+                anio = int(input('Ingrese el año de la cuota: '))
+                cls.validar_anio(anio)
+                
+                break
+            except ValueError as e:
+                print(f"Error al ingresar datos: {e}")
+
+        instanciaCuota = cls.obtener_cuota(db, dni_usuario, mes , anio)
+        if instanciaCuota is not None:
+            print(instanciaCuota)
+        
+        
     @classmethod
     def registrar_pago_cuota_menu(cls,db):
-        pass
+        while True:
+            try:
+                dni_usuario = input("Ingrese DNI: ")
+                Usuario.validar_dni(dni_usuario)
+                
+                if not Usuario.existe_usuario(db, dni_usuario):
+                    print("El usuario con el DNI ingresado no existe.")
+                    continue
+                
+                mes = int(input('Ingrese el mes de la cuota: '))
+                cls.validar_mes(mes)
+                
+                anio = int(input('Ingrese el año de la cuota: '))
+                cls.validar_anio(anio)
+                
+                break
+            except ValueError as e:
+                print(f"Error al ingresar datos: {e}")
+        
+        if cls.registrar_pago_cuota(db, dni_usuario, mes, anio):
+            print("Pago de cuota registrado con éxito")
+        else:
+            print("No se pudo registrar el pago de la cuota")
     
     
         
