@@ -3,7 +3,7 @@ DROP PROCEDURE IF EXISTS insertar_libro;
 DROP PROCEDURE IF EXISTS insertar_prestamo;
 DROP PROCEDURE IF EXISTS insertar_cuota;
 DROP PROCEDURE IF EXISTS existe_cuota;
-
+DROP FUNCTION IF EXISTS calcular_multa;
 -- PROCEDURES
 
 DELIMITER //
@@ -55,4 +55,38 @@ BEGIN
     INSERT INTO cuotas (dni_usuario, monto, mes, anio)
     VALUES (dni_usuario, monto, mes, anio);
 END //
+
+DELIMITER //
+
+CREATE FUNCTION calcular_multa(
+    fecha_prestamo DATE,
+    fecha_devolucion DATE,
+    dias_limite INT,
+    monto_cuota DECIMAL(10,2)
+) 
+RETURNS DECIMAL(10,2)
+DETERMINISTIC
+BEGIN
+    DECLARE dias_retraso INT;
+    DECLARE dias_sobrepasados INT;
+    DECLARE multa DECIMAL(10,2);
+
+    IF fecha_devolucion IS NULL THEN
+        SET fecha_devolucion = CURDATE();
+    END IF;
+
+    SET dias_retraso = DATEDIFF(fecha_devolucion, fecha_prestamo);
+    
+    SET dias_sobrepasados = dias_retraso - dias_limite
+    
+    IF dias_sobrepasados <= 0 THEN
+        SET multa = 0;
+    ELSE
+        SET multa = dias_sobrepasados * 0.03 * monto_cuota;
+    END IF;
+
+    RETURN multa;
+END //
+
+DELIMITER ;
 

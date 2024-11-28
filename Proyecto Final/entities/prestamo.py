@@ -1,10 +1,11 @@
 from entities.usuario import Usuario
 from entities.libro import Libro
+from entities.cuota import Cuota
 import datetime as dt
 
 class Prestamo:
     
-    DIAS_LIMITE_PRESTAMO = 30
+    DIAS_LIMITE_PRESTAMO = 14
     
     def __init__(self,usuario:str, libro:int,fecha_prestamo:dt.date= None, fecha_devolucion:dt.date= None):
         """
@@ -108,6 +109,17 @@ class Prestamo:
         return cls(result['dni_usuario'], result['lid'], result['fecha_prestamo'], result['fecha_devolucion'])
     
     @classmethod
+    def obtener_prestamo_por_id(cls, db, id_prestamo):
+        query = "SELECT * FROM prestamos WHERE id = %s"
+        db.cursor.execute(query, (id_prestamo,))
+        result = db.cursor.fetchone()
+        
+        if not result:
+            return None
+        
+        return cls(result['dni_usuario'], result['lid'], result['fecha_prestamo'], result['fecha_devolucion'])
+    
+    @classmethod
     def existe_prestamo(cls, db, dni_usuario, lid):
         query = "SELECT * FROM prestamos WHERE dni_usuario = %s AND lid = %s"
         db.cursor.execute(query, (dni_usuario,lid))
@@ -116,8 +128,8 @@ class Prestamo:
         return result is not None
 
     
-    
-    def devolver_prestamo(self, db):
+    @staticmethod
+    def devolver_prestamo(db, id_prestamo)->bool:
         """
         _summary_
 
@@ -128,26 +140,32 @@ class Prestamo:
         Returns:
             _type_: _description_
         """
-        pass
+        query = "select * from prestamos where id = %s"
+        db.cursor.execute(query, (id_prestamo,))
+        result = db.cursor.fetchone()
         
-    
-    @classmethod
-    def calcular_multa(cls, db, id_prestamo):
-        """
-        _summary_
-
-        Args:
-            db (_type_): _description_
-            id_prestamo (_type_): _description_
-
-        Returns:
-            _type_: _description_
-        """
-        pass
+        if result is None:
+            print('No se encontro el prestamo')
+            return False
         
+        if result['fecha_devolucion'] is not None:
+            print('El prestamo ya fue devuelto')
+            return False
         
-
-    
+        query = "UPDATE prestamos SET fecha_devolucion = %s WHERE id = %s"
+        db.cursor.execute(query, (dt.date.today(), id_prestamo))
+        db.conn.commit()
+        
+        prestamo = Prestamo.obtener_prestamo_por_id(db, id_prestamo)
+        
+        query = "SELECT calcular_multa(%s, %s, %s, %s) as multa" # Uso de funcion desde sql
+        db.cursor.execute(query, (prestamo.fecha_prestamo, prestamo.fecha_devolucion, Prestamo.DIAS_LIMITE_PRESTAMO, Cuota.MONTO_CUOTA))
+        
+        multa = db.cursor.fetchone()['multa']
+        
+        if multa > 0:
+            print(f'El usuario debe pagar una multa de ${multa}')
+        
     @classmethod
     def crear_prestamo_menu(cls, db):
         """
@@ -181,9 +199,21 @@ class Prestamo:
             print('No se encontro prestamo')
         else:
             print(f'Prestamo encontrado: {prestamo}')
+        
+    @classmethod
+    def obtener_lista_prestamos_menu(cls,db):
+        query = """
+        SELECT * FROM prestamos ORDER BY fecha_prestamo
+        """
+        db.cursor.execute(query)
+        prestamos = db.cursor.fetchall()
+        print("ID | DNI USUARIO | LID | FECHA PRESTAMO | FECHA DEVOLUCION")
+        for prestamo_dict in prestamos:
+            prestamo = Prestamo.fromDict(prestamo_dict)
+            print(f"{prestamo_dict['id']} {prestamo}")
     
     @classmethod
-    def calcular_multa_menu(cls, db):
+    def devolver_prestamo_menu(cls, db):
         """
         _summary_
 
@@ -199,22 +229,10 @@ class Prestamo:
             print('El id ingresado no es valido')
             return
         
-        multa = cls.calcular_multa(db, id_prestamo)
-        print(f'La multa a pagar es de ${multa}')
+        if cls.devolver_prestamo(db, id_prestamo):
+            print('Prestamo devuelto')
         
-    @classmethod
-    def obtener_lista_prestamos_menu(cls,db):
-        query = """
-        SELECT * FROM prestamos
-        """
-        db.cursor.execute(query)
-        prestamos = db.cursor.fetchall()
-        print("DNI USUARIO | LID | FECHA PRESTAMO | FECHA DEVOLUCION")
-        for prestamo_dict in prestamos:
-            prestamo = Prestamo.fromDict(prestamo_dict)
-            print(prestamo)
-    
-    
+        
     
 if __name__ == '__main__':
     pass

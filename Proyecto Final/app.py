@@ -8,6 +8,7 @@ from entities.usuario import Usuario
 from entities.libro import Libro
 from entities.prestamo import Prestamo
 from entities.cuota import Cuota
+from entities.reporte import Reporte
 
 print(r"""
  _      _  _      _  _         _
@@ -74,7 +75,7 @@ DICT_OPCIONES_PRESTAMOS = {
     '1': 'Registrar nuevo prestamo',
     '2': 'Ver detalles de un prestamo',
     '3': 'Obtener Lista de prestamos',
-    '4': 'Calcular multa por retraso',
+    '4': 'Devolver prestamo',
     'q': '<- Volver al menu principal'
 }
 
@@ -318,16 +319,18 @@ def manejo_de_prestamos():
                     espera_tecla()
                 case '4':
                     clear_console()
-                    Prestamo.calcular_multa_menu(db)
+                    Prestamo.devolver_prestamo_menu(db)
                     espera_tecla()
                 case 'q':
                     break
       
 # -- 4 --
 def reporte_morosos():
-    # TODO
+    clear_console()
     print("Reporte de morosos")
-
+    Reporte(db)
+    espera_tecla()
+    
 # -- 5 --
 def manejo_cuotas():
     

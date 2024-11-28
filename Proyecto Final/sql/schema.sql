@@ -44,6 +44,7 @@ CREATE TABLE Cuotas (
     mes INT NOT NULL,
     anio INT NOT NULL,
     estado_pago ENUM('PENDIENTE', 'PAGADO') DEFAULT 'PENDIENTE',
-    FOREIGN KEY (dni_usuario) REFERENCES Usuarios(dni) ON DELETE CASCADE
+    FOREIGN KEY (dni_usuario) REFERENCES Usuarios(dni) ON DELETE CASCADE,
+    UNIQUE (dni_usuario, mes, anio)
 );
 

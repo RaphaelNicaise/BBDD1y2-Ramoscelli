@@ -3,6 +3,9 @@ from enum import Enum
 
 
 class Cuota:
+    
+    MONTO_CUOTA = 50.00
+    
     def __init__(self,dni_usuario:str, monto:float ,mes:int ,anio:int, estado_pago:str='PENDIENTE', id_cuota:int=None):
         
         self.validar_monto(monto)
@@ -127,9 +130,9 @@ class Cuota:
         if cls.existe_cuota(db,dni_usuario,mes,anio):
             raise ValueError('Ya existe una cuota registrada para el mes y año indicados')
         
-        instanciaCuota = cls(dni_usuario, monto, mes, anio)
+        instanciaCuota = cls(dni_usuario, cls.MONTO_CUOTA, mes, anio)
         
-        db.cursor.callproc('insertar_cuota',(dni_usuario, monto, mes, anio))
+        db.cursor.callproc('insertar_cuota',(dni_usuario, cls.MONTO_CUOTA, mes, anio))
         db.conn.commit()
          
         db.cursor.execute("SELECT id FROM cuotas WHERE dni_usuario = %s AND mes = %s AND anio = %s",(dni_usuario,mes,anio))   
@@ -192,10 +195,6 @@ class Cuota:
                     print("El usuario con el DNI ingresado no existe.")
                     continue  # Volver a pedir el DNI
                 
-                # Pedimos el monto y lo validamos
-                monto = float(input('Ingrese el monto de la cuota: '))
-                cls.validar_monto(monto)
-                
                 # Pedimos el mes y lo validamos
                 mes = int(input('Ingrese el mes de la cuota: '))
                 cls.validar_mes(mes)
@@ -205,7 +204,7 @@ class Cuota:
                 cls.validar_anio(anio)
 
                 # Crear la cuota y registrarla en la base de datos
-                instanciaCuota = cls.crear_cuota(db, dni_usuario, monto, mes, anio)
+                instanciaCuota = cls.crear_cuota(db, dni_usuario, cls.MONTO_CUOTA, mes, anio)
                 print("Cuota creada exitosamente:", instanciaCuota)
                 break  # Salimos del bucle si todo fue correcto
             
