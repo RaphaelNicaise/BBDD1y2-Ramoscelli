@@ -1,6 +1,4 @@
 from entities.usuario import Usuario
-from enum import Enum
-
 
 class Cuota:
     
@@ -95,6 +93,7 @@ class Cuota:
     @id_cuota.setter
     def id_cuota(self,id_cuota:int):
         self.__id_cuota = id_cuota
+    
     # Validaciones
     
     @staticmethod
@@ -126,7 +125,22 @@ class Cuota:
         
     @classmethod
     def crear_cuota(cls,db,dni_usuario:str, monto:float ,mes:int ,anio:int, estado_pago:str='PENDIENTE'):
-        
+        """ Crea una nueva cuota en la base de datos, usando el procedimiento
+
+        Args:
+            db (_type_): _description_
+            dni_usuario (str): _description_
+            monto (float): _description_
+            mes (int): _description_
+            anio (int): _description_
+            estado_pago (str, optional): _description_. Defaults to 'PENDIENTE'.
+
+        Raises:
+            ValueError: _description_
+
+        Returns:
+            _type_: _description_
+        """
         if cls.existe_cuota(db,dni_usuario,mes,anio):
             raise ValueError('Ya existe una cuota registrada para el mes y año indicados')
         
@@ -134,8 +148,12 @@ class Cuota:
         
         db.cursor.callproc('insertar_cuota',(dni_usuario, cls.MONTO_CUOTA, mes, anio))
         db.conn.commit()
+        
+        query = """
+            SELECT id FROM cuotas WHERE dni_usuario = %s AND mes = %s AND anio = %s
+        """
          
-        db.cursor.execute("SELECT id FROM cuotas WHERE dni_usuario = %s AND mes = %s AND anio = %s",(dni_usuario,mes,anio))   
+        db.cursor.execute(query,(dni_usuario,mes,anio))   
 
         instanciaCuota.id_cuota = db.cursor.fetchone()['id']
         return instanciaCuota
@@ -143,7 +161,7 @@ class Cuota:
     @staticmethod
     def existe_cuota(db,dni_usuario,mes,anio)->bool:
         query = """
-        SELECT 1 FROM cuotas WHERE dni_usuario = %s AND mes = %s AND anio = %s
+            SELECT 1 FROM cuotas WHERE dni_usuario = %s AND mes = %s AND anio = %s
         """
         
         db.cursor.execute(query,(dni_usuario,mes,anio))
@@ -160,7 +178,10 @@ class Cuota:
         if cuota.estado_pago == 'PAGADO':
             return False
         
-        query = 'UPDATE cuotas SET estado_pago = "PAGADO" WHERE dni_usuario = %s AND mes = %s AND anio = %s'
+        query = """
+            UPDATE cuotas SET estado_pago = "PAGADO" 
+            WHERE dni_usuario = %s AND mes = %s AND anio = %s
+        """
         db.cursor.execute(query, (dni_usuario, mes, anio))
         db.conn.commit()
         return True
@@ -168,7 +189,10 @@ class Cuota:
     @classmethod
     def obtener_cuota(cls,db,dni_usuario,mes,anio):
         try:
-            query = 'SELECT * FROM cuotas WHERE dni_usuario = %s AND mes = %s AND anio = %s'
+            query = """
+                SELECT * FROM cuotas 
+                WHERE dni_usuario = %s AND mes = %s AND anio = %s
+            """
         
             if not cls.existe_cuota(db, dni_usuario, mes,anio):
                 print("No existe esta cuota")
@@ -180,6 +204,29 @@ class Cuota:
             return cuota
         except ValueError as e:
             print(f'Error al obtener cuota: {e}')
+    
+    @classmethod
+    def editar_cuota(cls,db,mes,anio,nuevoMonto:float)->bool:
+        """ Editamos valor de la cuota por el nuevoMonto
+        que correspondan al mes y al año, de las cuotas pendientes,
+        no actualizamos las que estan pagas.
+        Args:
+            db (_type_): _description_
+            mes (_type_): _description_
+            anio (_type_): _description_
+        """
+        query = """
+            UPDATE cuotas SET monto = %s WHERE mes = %s AND anio = %s
+            AND estado_pago = 'PENDIENTE'
+        """
+        db.cursor.execute(query,(nuevoMonto,mes,anio))
+        db.conn.commit()
+        if db.cursor.rowcount > 0:
+            return True
+        return False
+        
+        
+    
     # MENU
     
     @classmethod 
@@ -190,23 +237,22 @@ class Cuota:
             try:
                 dni_usuario = input('Ingrese el DNI del usuario: ')
                 # Verificamos si el usuario existe en la base de datos
-                Usuario.validar_dni(dni_usuario)
-                if not Usuario.existe_usuario(db, dni_usuario):
+                cls.validar_dni(dni_usuario)
+                if not cls.existe_usuario(db, dni_usuario):
                     print("El usuario con el DNI ingresado no existe.")
-                    continue  # Volver a pedir el DNI
+                    continue  
                 
-                # Pedimos el mes y lo validamos
                 mes = int(input('Ingrese el mes de la cuota: '))
                 cls.validar_mes(mes)
                 
-                # Pedimos el año y lo validamos
+                
                 anio = int(input('Ingrese el año de la cuota: '))
                 cls.validar_anio(anio)
 
-                # Crear la cuota y registrarla en la base de datos
+                
                 instanciaCuota = cls.crear_cuota(db, dni_usuario, cls.MONTO_CUOTA, mes, anio)
                 print("Cuota creada exitosamente:", instanciaCuota)
-                break  # Salimos del bucle si todo fue correcto
+                break  
             
             except ValueError as e:
                 print(f"Hubo un error al crear la cuota: {e}")
@@ -263,5 +309,25 @@ class Cuota:
         else:
             print("No se pudo registrar el pago de la cuota")
     
-    
+    @classmethod
+    def editar_cuota_menu(cls,db):
+        while True:
+            try:
+                
+                mes = int(input('Ingrese el mes de la cuota: '))
+                cls.validar_mes(mes)
+                
+                anio = int(input('Ingrese el año de la cuota: '))
+                cls.validar_anio(anio)
+                
+                nuevoMonto = float(input('Ingrese el nuevo monto de la cuota: '))
+                break
+            
+            except ValueError as e:
+                print(f"Error al ingresar datos: {e}")
+            
+        if cls.editar_cuota(db, mes, anio, nuevoMonto):
+            print(f"Cuotas del mes {mes} y año {anio} editada con éxito")
+        else:
+            print("No se pudo editar la cuota")
         
