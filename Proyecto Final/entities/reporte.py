@@ -7,6 +7,6 @@ def Reporte(db):
         db (_type_): _description_
     """
     query = """
-    
+            
     """
     return
