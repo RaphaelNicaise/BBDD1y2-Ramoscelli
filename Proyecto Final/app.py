@@ -2,7 +2,7 @@ import msvcrt
 import datetime as dt
 import time
 
-from utils import clear_console, espera_tecla
+from utils import *
 from database import Database
 from entities.usuario import Usuario
 from entities.libro import Libro
@@ -22,8 +22,12 @@ print(r"""
 
 time.sleep(1.5)
 
-db = Database() # Instancia de la clase Database
-
+try:
+    db = Database() # Instancia de la clase Database
+except Exception as e:
+    print(e)
+    exit()
+    
 # Diccionarios con las opciones de cada menu
 DICT_OPCIONES = {
     '1': 'Gestion de Libros',
@@ -83,32 +87,20 @@ DICT_OPCIONES_CUOTAS = {
     '1': 'Registrar nueva cuota',
     '2': 'Registrar pago de cuota',
     '3': 'Ver detalles de una cuota',
+    '4': 'Editar cuota',
     'q': '<- Volver al menu principal'
 }
 
-
-def show_menu(DICT):
-    """
-    Funcion que pasandole un diccionario de numeros con opciones y valores, imprime el menu en pantalla.
-    Args:
-        DICT (dict): Diccionario con las opciones del menu.  
-    """
-    for key, value in DICT.items():
-        print(f"{key}. {value}")
-    print("Seleccione una opcion: ", end='\n')
-
 def menu(): 
-    # Ejecuta el menu de opciones y las acciones correspondientes
+    """ Ejecuta el menu principal de opciones y las acciones correspondientes """
 
+    
     while True:
         
         clear_console()
         show_menu(DICT_OPCIONES)        
         
-        try:
-            key = msvcrt.getch().decode('utf-8').lower()
-        except UnicodeDecodeError as e:
-            print("Invalid key")
+        key = espera_input()
            
         if key in DICT_OPCIONES.keys():
 
@@ -134,17 +126,14 @@ def menu():
 # -- 1 -- 
 
 def gestion_libros():
-    """Agregar, ver, actualizar o eliminar información de usuarios."""
+    """Menu para agregar, ver, actualizar o eliminar información de usuarios."""
     
     while True:
         
         clear_console()
         show_menu(DICT_OPCIONES_LIBROS)
         
-        try:
-            key = msvcrt.getch().decode('utf-8').lower()
-        except UnicodeDecodeError as e:
-            print("Invalid key")
+        key = espera_input()
             
         if key in DICT_OPCIONES_LIBROS.keys():
 
@@ -153,64 +142,61 @@ def gestion_libros():
                         
                         clear_console()
                         Libro.crear_libro_menu(db)
-                        espera_tecla()
+                        espera_enter()
                     
                     case '2':
                     
                         clear_console()
                         Libro.obtener_libro_menu(db)
-                        espera_tecla()
+                        espera_enter()
                     
                     case '3':
                         while True:
                             clear_console()
                             show_menu(DICT_OPCIONES_LIBROS_ACTUALIZAR)
                             
-                            try:
-                                key = msvcrt.getch().decode('utf-8').lower()
-                            except UnicodeDecodeError as e:
-                                print("Invalid key")
+                            key = espera_input()
                                 
                             if key in DICT_OPCIONES_LIBROS_ACTUALIZAR.keys():
                                 match key:
                                     case '1':
                                         clear_console()
                                         Libro.actualizar_titulo_menu(db)
-                                        espera_tecla()
+                                        espera_enter()
                                     case '2':
                                         clear_console()
                                         Libro.actualizar_autor_menu(db)
-                                        espera_tecla()
+                                        espera_enter()
                                     case '3':
                                         clear_console()
                                         Libro.actualizar_genero_menu(db)
-                                        espera_tecla()
+                                        espera_enter()
                                     case '4':
                                         clear_console()
                                         Libro.actualizar_editorial_menu(db)
-                                        espera_tecla()
+                                        espera_enter()
                                     case '5':
                                         clear_console()
                                         Libro.actualizar_año_publicacion_menu(db)
-                                        espera_tecla()
+                                        espera_enter()
                                     case 'q':
                                         break
                     case '4':
                         
                         clear_console()
                         Libro.eliminar_libro_menu(db)
-                        espera_tecla()
+                        espera_enter()
                     
                     case '5':
                         
                         clear_console()
                         Libro.listar_libros_menu(db)
-                        espera_tecla()
+                        espera_enter()
                     
                     case '6':
                         clear_console()
                         Libro.buscar_libro_filtrado_menu(db)
-                        espera_tecla()
+                        espera_enter()
                     case 'q':
                         break      
         else:
@@ -219,29 +205,26 @@ def gestion_libros():
 # -- 2 --
 
 def gestion_usuarios():
-    """Registrar nuevos libros, ver detalles, actualizar información y eliminar entradas.
+    """Menu para registrar nuevos libros, ver detalles, actualizar información y eliminar usuarios.
     """
     
     while True:
         clear_console()
         show_menu(DICT_OPCIONES_USUARIOS)
         
-        try:
-            key = msvcrt.getch().decode('utf-8').lower()
-        except UnicodeDecodeError as e:
-            print("Invalid key")
+        key = espera_input()
             
         if key in DICT_OPCIONES_USUARIOS.keys():
             match key:
                 case '1':
                     clear_console()
                     Usuario.crear_usuario_menu(db)
-                    espera_tecla()
+                    espera_enter()
                 
                 case '2':
                     clear_console()
                     Usuario.obtener_usuario_menu(db)
-                    espera_tecla()
+                    espera_enter()
                 
                 case '3':
                     while True:
@@ -249,120 +232,120 @@ def gestion_usuarios():
                         clear_console()
                         show_menu(DICT_OPCIONES_USUARIOS_ACTUALIZAR)
                         
-                        try:
-                            key = msvcrt.getch().decode('utf-8').lower()
-                        except UnicodeDecodeError as e:
-                            print("Invalid key")
+                        key = espera_input()
                         
                         match key:
                             case '1':
                                 clear_console()
                                 Usuario.actualizar_nombre_menu(db)
-                                espera_tecla()
+                                espera_enter()
                             case '2':
                                 clear_console()
                                 Usuario.actualizar_apellido_menu(db)
-                                espera_tecla()
+                                espera_enter()
                             
                             case '3':
                                 clear_console()
                                 Usuario.actualizar_email_menu(db)
-                                espera_tecla()
+                                espera_enter()
                             case '4':
                                 clear_console()
                                 Usuario.actualizar_telefono_menu(db)
-                                espera_tecla()
+                                espera_enter()
                             case 'q':
                                 break   
                 
                 case '4':
                     clear_console()
                     Usuario.eliminar_usuario_menu(db)
-                    espera_tecla()
+                    espera_enter()
                 
                 case '5':
                     clear_console()
                     Usuario.listar_usuarios_menu(db)
-                    espera_tecla()
+                    espera_enter()
                 case '6':
                     clear_console()
                     Usuario.buscar_usuario_filtrado_menu(db)
-                    espera_tecla()
+                    espera_enter()
                 case 'q':
                     break
   
 # -- 3 --
 def manejo_de_prestamos():
-    """ """
+    """
+    Menu para registrar nuevos prestamos, ver detalles de un prestamo, obtener lista de prestamos y devolver un prestamo. 
+    """
     while True:
         clear_console()
         show_menu(DICT_OPCIONES_PRESTAMOS)
         
-        try:
-            key = msvcrt.getch().decode('utf-8').lower()
-        except UnicodeDecodeError as e:
-            print("Invalid key")
+        key = espera_input()
         
         if key in DICT_OPCIONES_PRESTAMOS.keys():
             match key:
                 case '1':
                     clear_console()
                     Prestamo.crear_prestamo_menu(db)
-                    espera_tecla()
+                    espera_enter()
                 case '2':
                     clear_console()
                     Prestamo.obtener_prestamo_menu(db)
-                    espera_tecla()
+                    espera_enter()
                 case '3':
                     clear_console()
                     Prestamo.obtener_lista_prestamos_menu(db)
-                    espera_tecla()
+                    espera_enter()
                 case '4':
                     clear_console()
                     Prestamo.devolver_prestamo_menu(db)
-                    espera_tecla()
+                    espera_enter()
                 case 'q':
                     break
       
 # -- 4 --
 def reporte_morosos():
+    """ Un simple reporte de morosos.
+    """
     clear_console()
     print("Reporte de morosos")
     Reporte(db)
-    espera_tecla()
+    espera_enter()
     
 # -- 5 --
 def manejo_cuotas():
-    
+    """ Menu para registrar cuotas, registrar pagos de cuotas, ver detalles de una cuota y editar una cuota.
+    """
     while True:
         clear_console()
         show_menu(DICT_OPCIONES_CUOTAS)
 
-        try:
-            key = msvcrt.getch().decode('utf-8').lower()
-        except UnicodeDecodeError as e:
-            print("Invalid key")
+        key = espera_input()
         
         if key in DICT_OPCIONES_CUOTAS.keys():
             match key:
                 case '1':
                     clear_console()
                     Cuota.crear_cuota_menu(db)
-                    espera_tecla()
+                    espera_enter()
                 case '2':
                     clear_console()
                     Cuota.registrar_pago_cuota_menu(db)
-                    espera_tecla()
+                    espera_enter()
                 case '3':
                     clear_console()
                     Cuota.obtener_cuota_menu(db)
-                    espera_tecla()
+                    espera_enter()
+                case '4':
+                    clear_console()
+                    Cuota.editar_cuota_menu(db)
+                    espera_enter()
                 case 'q':
                     break
 
 if __name__ == "__main__":
     menu()
     db.close()
-     # Cerramos la conexion a la base de datos
+    # Cerramos la conexion a la base de datos
     
     
