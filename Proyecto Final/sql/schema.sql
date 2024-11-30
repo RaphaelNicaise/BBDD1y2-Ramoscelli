@@ -1,4 +1,6 @@
+CREATE DATABASE IF NOT EXISTS biblioteca;
 
+USE biblioteca;
 
 DROP TABLE IF EXISTS Cuotas;
 DROP TABLE IF EXISTS Prestamos;

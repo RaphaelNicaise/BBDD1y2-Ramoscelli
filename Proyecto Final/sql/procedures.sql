@@ -77,7 +77,7 @@ BEGIN
 
     SET dias_retraso = DATEDIFF(fecha_devolucion, fecha_prestamo);
     
-    SET dias_sobrepasados = dias_retraso - dias_limite
+    SET dias_sobrepasados = dias_retraso - dias_limite;
     
     IF dias_sobrepasados <= 0 THEN
         SET multa = 0;
