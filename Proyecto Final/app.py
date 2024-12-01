@@ -1,4 +1,3 @@
-import msvcrt
 import datetime as dt
 import time
 
@@ -9,16 +8,6 @@ from entities.libro import Libro
 from entities.prestamo import Prestamo
 from entities.cuota import Cuota
 from entities.reporte import Reporte
-
-print(r"""
- _      _  _      _  _         _
-| |    (_)| |    | |(_)       | |
-| |__   _ | |__  | | _   ___  | |_   ___   ___   __ _
-| '_ \ | || '_ \ | || | / _ \ | __| / _ \ / __| / _` |
-| |_) || || |_) || || || (_) || |_ |  __/| (__ | (_| |
-|_.__/ |_||_.__/ |_||_| \___/  \__| \___| \___| \__,_|
-
-""")
 
 time.sleep(1.5)
 
@@ -308,8 +297,9 @@ def reporte_morosos():
     """ Un simple reporte de morosos.
     """
     clear_console()
-    print("Reporte de morosos")
-    Reporte(db)
+    Reporte.reporte_promedio_meses(db)
+    Reporte.reporte_cantidad_cuotas(db)
+    Reporte.reporte_socios_con_cuotas_pendientes(db)
     espera_enter()
     
 # -- 5 --
