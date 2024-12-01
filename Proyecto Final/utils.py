@@ -1,6 +1,16 @@
 import os
 import msvcrt
 
+print(r"""
+ _      _  _      _  _         _
+| |    (_)| |    | |(_)       | |
+| |__   _ | |__  | | _   ___  | |_   ___   ___   __ _
+| '_ \ | || '_ \ | || | / _ \ | __| / _ \ / __| / _` |
+| |_) || || |_) || || || (_) || |_ |  __/| (__ | (_| |
+|_.__/ |_||_.__/ |_||_| \___/  \__| \___| \___| \__,_|
+
+""")
+
 def clear_console():
     """
     funcion que limpia la consola de acuerdo al sistema operativo.
