@@ -1,10 +1,12 @@
 # TP1 Bases de Datos 2
 
 #### Participantes:
-- [Raphael Nicaise]("")
-- [Santiago Segal]("")
-- [Abner Grgurich]("")
-- [Nicolas Cordano]("")
+- [Raphael Nicaise](https://github.com/RaphaelNicaise)
+- [Santiago Segal](https://github.com/Santucho12)
+- [Abner Grgurich](https://github.com/Abner2646)
+- [Nicolas Cordano](https://github.com/NACXIIX)
+
+<hr style="height:1px; border:none; background-color:#e1e4e8;" />
 
 > ℹ️ Para algunos puntos se requiere el uso de una base de datos, por eso aprovechamos el poder la nube, y levantamos una base de datos en AWS. En este caso, utilizamos Amazon RDS para crear una base de datos MySQL, y mediante un RDBMS, en nuestro caso DBeaver, nos conectamos a la base de datos y ejecutamos los scripts.
 
