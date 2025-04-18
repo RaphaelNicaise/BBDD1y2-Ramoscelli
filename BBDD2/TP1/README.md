@@ -6,6 +6,16 @@
 - [Abner Grgurich](https://github.com/Abner2646)
 - [Nicolas Cordano](https://github.com/NACXIIX)
 
+#### Puntos: 
+[1](#1)
+[2](#2)
+[3](#3)
+[4](#4)
+[5](#5)
+[6](#6)
+[7](#7)
+[8](#8)
+
 <hr style="height:1px; border:none; background-color:#e1e4e8;" />
 
 > ℹ️ Para algunos puntos se requiere el uso de una base de datos, por eso aprovechamos el poder la nube, y levantamos una base de datos en AWS. En este caso, utilizamos Amazon RDS para crear una base de datos MySQL, y mediante un RDBMS, en nuestro caso DBeaver, nos conectamos a la base de datos y ejecutamos los scripts.
@@ -112,6 +122,12 @@ Salida:
 
 ### 5.
 
+
+<hr style="height:1px; border:none; background-color:#e1e4e8;" />
+
+### 6.
+
+
 Para eso antes debemos crear la tabla Ventas:
 ```sql
 CREATE TABLE ventas (
@@ -160,10 +176,6 @@ LIMIT 5;
 ```
 
 <img src="assets/dbeaverp5.png">
-
-<hr style="height:1px; border:none; background-color:#e1e4e8;" />
-
-### 6.
 
 <hr style="height:1px; border:none; background-color:#e1e4e8;" />
 
