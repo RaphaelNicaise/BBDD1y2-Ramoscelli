@@ -61,7 +61,7 @@ db.empleados.deleteOne(
 ```
 
 - Y asi queda la coleccion empleados:
-```json
+```js
 [
   {
     _id: ObjectId('68019d5e85074e01beb5f8a3'),
@@ -94,7 +94,7 @@ db.empleados.find({
 })
 ```
 
-```json
+```js
 [
   {
     _id: ObjectId('68019d5e85074e01beb5f8a3'),
@@ -158,7 +158,7 @@ db.empleados.updateMany(
 );
 ```
 
-```json
+```js
 [  
   {
     _id: ObjectId('68019d5e85074e01beb5f8a3'),
