@@ -405,7 +405,7 @@ db.cursos.aggregate([
 
 ### 9.
 
- Un `Replica Set` en MongoDB es un *conjunto de instancias** de bases de datos que mantienen *copias exactas de los mismos datos*. La principal ventaja de usar un Replica Set es la `alta disponibilidad`: si uno de los nodos (servidores) falla, otro nodo secundario puede ser promovido automaticamente a primario, asegurando que la *base de datos siga funcionando sin interrupciones*. Esto minimiza el riesgo de pérdida de datos y mejora la fiabilidad del sistema.
+ Un `Replica Set` en MongoDB es un *conjunto de instancias* de bases de datos que mantienen *copias exactas de los mismos datos*. La principal ventaja de usar un Replica Set es la `alta disponibilidad`: si uno de los nodos (servidores) falla, otro nodo secundario puede ser promovido automaticamente a primario, asegurando que la *base de datos siga funcionando sin interrupciones*. Esto minimiza el riesgo de pérdida de datos y mejora la fiabilidad del sistema.
 
 Otra ventaja importante es la distribución de la carga de lectura. En un Replica Set, las lecturas pueden ser distribuidas entre los nodos secundarios, lo que alivia la carga en el nodo primario y mejora el rendimiento general del sistema. Además, los nodos secundarios pueden ser utilizados para hacer copias de seguridad de los datos, sin afectar la operación normal del sistema. Esta redundancia asegura que los datos estén siempre disponibles y accesibles, incluso en situaciones de fallo.
 
