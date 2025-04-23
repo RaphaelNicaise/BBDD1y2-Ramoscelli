@@ -61,6 +61,10 @@ INSERT INTO tabla_intermedia (id_alumno, id_materia) VALUES (99, 12);
 
 ### 3.
 
+> ℹ️ El [Script](scripts/3.sql) contiene comentarios que explican el proceso paso a paso.
+
+
+
 <hr style="height:1px; border:none; background-color:#e1e4e8;" />
 
 ### 4.
@@ -121,6 +125,79 @@ Salida:
 <hr style="height:1px; border:none; background-color:#e1e4e8;" />
 
 ### 5.
+
+### 5.
+
+Primero eliminamos el índice `idx_precio_categoria` si existe:
+```sql
+DROP INDEX idx_precio_categoria ON productos;
+```
+
+A continuación, realizamos una consulta que filtra por múltiples campos: `precio` y `stock`, pero sin índice:
+```sql
+EXPLAIN SELECT * FROM productos
+WHERE precio > 1400 AND stock > 499;
+```
+Salida:
+| id | select_type | table     | type | possible_keys | key | key_len | rows  | filtered | Extra                          |
+|----|-------------|-----------|------|---------------|-----|---------|-------|----------|--------------------------------|
+| 1  | SIMPLE      | productos | ALL  | NULL          | NULL| NULL    | 98612 | 11.11    | Using where                    |
+
+---
+
+Creamos un índice solo sobre el campo `precio`:
+```sql
+CREATE INDEX idx_precio ON productos(precio);
+```
+Ejecutamos nuevamente la consulta:
+```sql
+EXPLAIN SELECT * FROM productos
+WHERE precio > 1400 AND stock > 499;
+```
+Salida:
+| id | select_type | table     | type  | possible_keys | key       | key_len | rows  | filtered | Extra                          |
+|----|-------------|-----------|-------|---------------|-----------|---------|-------|----------|--------------------------------|
+| 1  | SIMPLE      | productos | range | idx_precio    | idx_precio| 6       | 6612  | 33.33    | Using index condition; Using where |
+
+---
+
+Creamos un índice solo sobre el campo `categoria_id`:
+```sql
+CREATE INDEX idx_categoria ON productos(categoria_id);
+```
+Ejecutamos nuevamente la consulta:
+```sql
+EXPLAIN SELECT * FROM productos
+WHERE precio > 1400 AND stock > 499;
+```
+Salida:
+| id | select_type | table     | type  | possible_keys | key       | key_len | rows  | filtered | Extra                          |
+|----|-------------|-----------|-------|---------------|-----------|---------|-------|----------|--------------------------------|
+| 1  | SIMPLE      | productos | range | idx_precio    | idx_precio| 6       | 6612  | 33.33    | Using index condition; Using where |
+
+---
+
+Finalmente, creamos un índice combinado sobre los campos `precio` y `stock`:
+```sql
+CREATE INDEX idx_precio_stock ON productos(precio, stock);
+```
+Ejecutamos nuevamente la consulta:
+```sql
+EXPLAIN SELECT * FROM productos
+WHERE precio > 1400 AND stock > 499;
+```
+Salida:
+| id | select_type | table     | type  | possible_keys       | key              | key_len | rows  | filtered | Extra                          |
+|----|-------------|-----------|-------|---------------------|------------------|---------|-------|----------|--------------------------------|
+| 1  | SIMPLE      | productos | range | idx_precio,idx_precio_stock | idx_precio_stock | 6       | 6612  | 33.33    | Using index condition; Using where |
+
+---
+
+Podemos verificar los índices creados con:
+```sql
+SHOW INDEXES FROM productos;
+```
+
 
 
 <hr style="height:1px; border:none; background-color:#e1e4e8;" />
