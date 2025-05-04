@@ -25,7 +25,8 @@ Nos conectamos a la base de datos de `MongoDB` mediante **mongosh**:
 
 <hr style="height:1px; border:none; background-color:#e1e4e8;" />
 
-### 1. ➡ [🔗Script](./scripts/script1.mongodb.js)
+### 1. 
+➡ [🔗Script](./scripts/script1.mongodb.js)
 
 - Creamos la base de datos `empresa`: 
 ```js
@@ -79,7 +80,8 @@ db.empleados.deleteOne(
 <hr style="height:1px; border:none; background-color:#e1e4e8;" />
 
 
-### 2. ➡ [🔗Script](./scripts/script2.mongodb.js)
+### 2. 
+➡ [🔗Script](./scripts/script2.mongodb.js)
 
 - Queremos los empleados que tengan mas de 25 y menos de 40 años:
 ```js
@@ -103,7 +105,8 @@ db.empleados.find({
 ```
 <hr style="height:1px; border:none; background-color:#e1e4e8;" />
 
-### 3. ➡ [🔗Script](./scripts/script3.mongodb.js)
+### 3. 
+➡ [🔗Script](./scripts/script3.mongodb.js)
 
 
 - Queremos recuperar solo el nombre y la edad de los empleados:
@@ -131,7 +134,8 @@ db.empleados.find(
 
 <hr style="height:1px; border:none; background-color:#e1e4e8;" />
 
-### 4. ➡ [🔗Script](./scripts/script4.mongodb.js)
+### 4. 
+➡ [🔗Script](./scripts/script4.mongodb.js)
 
 - Agregamos a cada documento (`empleado`) el campo direccion con datos de la calle, la ciudad y codigo postal:
 ```js
@@ -173,7 +177,8 @@ db.empleados.updateMany(
 
 <hr style="height:1px; border:none; background-color:#e1e4e8;" />
 
-### 5. ➡ [🔗Script](./scripts/script5.mongodb.js)
+### 5. 
+➡ [🔗Script](./scripts/script5.mongodb.js)
 
 - Creamos una nueva coleccion llamada `ventas`:
 ```js
@@ -240,7 +245,8 @@ db.ventas.aggregate({
 
 <hr style="height:1px; border:none; background-color:#e1e4e8;" />
 
-### 6. ➡ [🔗Script](./scripts/script6.mongodb.js)
+### 6. 
+➡ [🔗Script](./scripts/script6.mongodb.js)
 
 - Creamos la coleccion `clientes`, e insertamos documentos (clientes):
 ```js
@@ -381,7 +387,8 @@ db.alumnos.insertMany([
 
 <hr style="height:1px; border:none; background-color:#e1e4e8;" />
 
-### 8. ➡ [🔗Script](./scripts/script8.mongodb.js)
+### 8. 
+➡ [🔗Script](./scripts/script8.mongodb.js)
 
 - Hacemos un `join`entre las colecciones `cursos` y `alumnos`, para obtener los alumnos que cursan cada curso:
 ```js
@@ -416,15 +423,10 @@ El `sharding` en MongoDB es fundamental para manejar bases de datos de *alto vol
 Ademas, el sharding mejora el rendimiento de la base de datos al balancear la carga de trabajo entre varios nodos. Cada shard maneja una parte de los datos, lo que permite realizar operaciones de lectura y escritura mas rápidas. Aunque las consultas que abarcan varios shards pueden ser un poco mas lentas, el diseño adecuado del sharding puede optimizar las consultas y distribuir eficientemente los datos, manteniendo un buen rendimiento a medida que la base de datos crece.
 
 
-
-
-
-
-
-
 <hr style="height:1px; border:none; background-color:#e1e4e8;" />
 
-### 10. ➡ [🔗Script(js)](./scripts/script10.mongodb.js) | [Script(bat)](./scripts/script10.bat)
+### 10. 
+➡ [🔗Script(js)](./scripts/script10.mongodb.js) | [Script(bat)](./scripts/script10.bat)
 
 - Creamos al user **admin** con el rol `readWrite` sobre la base de datos `empresa`:
 ```js
