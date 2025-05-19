@@ -8,12 +8,6 @@
 
 ####  📚 Puntos:
 
-##### Problemas (Entregable):
-
-[1](#1)
-[2](#2)
-[3](#3)
-[4](#4)
 
 ##### Ejercicios: 
 [1](#Ej1)
@@ -25,29 +19,14 @@
 [7](#Ej7)
 [8](#Ej8)
 
+##### Problemas:
 
+[1](#1)
+[2](#2)
+[3](#3)
+[4](#4)
 
-## Problemas (Entregable):
-
-### 1. 
-➡ [🔗Script](./scripts/problemas/script1.mongodb.js)
-
-<hr style="height:1px; border:none; background-color:#e1e4e8;" />
-
-### 2. 
-➡ [🔗Script](./scripts/problemas/script2.mongodb.js)
-
-<hr style="height:1px; border:none; background-color:#e1e4e8;" />
-
-### 3. 
-➡ [🔗Script](./scripts/problemas/script3.mongodb.js)
-
-<hr style="height:1px; border:none; background-color:#e1e4e8;" />
-
-### 4. 
-➡ [🔗Script](./scripts/problemas/script4.mongodb.js)
-
-
+--- 
 ## Ejercicios:
 ### Ej1. 
 ➡ [🔗Script](./scripts/ejercicios/script1.mongodb.js)
@@ -89,3 +68,23 @@
 
 <hr style="height:1px; border:none; background-color:#e1e4e8;" />
 
+
+## Problemas:
+
+### 1. 
+➡ [🔗Script](./scripts/problemas/script1.mongodb.js)
+
+<hr style="height:1px; border:none; background-color:#e1e4e8;" />
+
+### 2. 
+➡ [🔗Script](./scripts/problemas/script2.mongodb.js)
+
+<hr style="height:1px; border:none; background-color:#e1e4e8;" />
+
+### 3. 
+➡ [🔗Script](./scripts/problemas/script3.mongodb.js)
+
+<hr style="height:1px; border:none; background-color:#e1e4e8;" />
+
+### 4. 
+➡ [🔗Script](./scripts/problemas/script4.mongodb.js)
