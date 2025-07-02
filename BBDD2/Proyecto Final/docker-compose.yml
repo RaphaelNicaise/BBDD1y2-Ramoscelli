@@ -11,9 +11,11 @@ services:
       - mongo
     environment:
       - FLASK_ENV=development
+      - FLASK_APP=app.py
+    command: python -m flask run --host=0.0.0.0 --port=5000 --reload
 
   mongo:
-    image: mongo:6.0
+    image: mongo:7.0
     container_name: mongodb
     ports:
       - "27017:27017"
