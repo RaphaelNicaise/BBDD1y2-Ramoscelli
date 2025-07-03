@@ -22,7 +22,7 @@ CREATE
         (m3)-[:MATERIA_DE]->(c5),
         (m3)-[:MATERIA_DE]->(c6),
 
-        (m1)-[:PRERREQUISITO_DE]->(m3),
+        (m1)-[:PRERREQUISITO_DE]->(m3), // necesitas progra 1 para progra 2
 
         (e1)-[:INSCRIPTO {nota_final: 9}]->(c1), // hace progra 1 a la mañana
         (e1)-[:INSCRIPTO {nota_final: 6}]->(c3), // hace base de datos 1 a la mañana

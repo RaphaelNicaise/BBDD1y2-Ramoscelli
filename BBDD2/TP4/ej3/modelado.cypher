@@ -16,7 +16,9 @@ CREATE
         (u1)-[:POSTEA]->(p1:Post {descripcion: "Foto de mi gato"}),
         (u2)-[:POSTEA]->(p2:Post {descripcion: "<3"}),
         (u3)-[:POSTEA]->(p3:Post {descripcion: "Foto con mi primo"}),
-        
+        (u2)-[:POSTEA]->(p4:Post {descripcion: "Foto de mi perro"}),
+        (u3)-[:POSTEA]->(p5:Post {descripcion: "Foto de mi familia"}),
+
         (u1)-[:TIENE]->(h1:Habilidad {nombre: "Cocinar"}),
         (u1)-[:TIENE]->(h2:Habilidad {nombre: "Programar"}),
         (u2)-[:TIENE]->(h3:Habilidad {nombre: "Cocinar"}),
