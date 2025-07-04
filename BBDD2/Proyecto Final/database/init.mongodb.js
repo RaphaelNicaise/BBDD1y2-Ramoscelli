@@ -30,7 +30,7 @@ db.movimientos.insertOne(
 );
 
 
-db.proovedores.insertOne(
+db.proveedores.insertOne(
 // Colección: proveedores
 {
   _id: id_proovedor,
