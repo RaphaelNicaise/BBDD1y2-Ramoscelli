@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify
 from bson import ObjectId
 
 from database.conn_database import client_db
+from models.producto import obtener_productos, obtener_producto_por_codigo
 
 productos_bp = Blueprint('productos', __name__)
 
@@ -14,7 +15,7 @@ except Exception as e:
 def get_productos():
     try:
         print("Endpoint /productos llamado")
-        productos_list = list(productos.find({}))
+        productos_list = obtener_productos()
         print(f"Se encontraron {len(productos_list)} productos")
         for producto in productos_list:
             producto['_id'] = str(producto['_id'])
@@ -29,7 +30,7 @@ def get_productos():
 def get_producto(codigo):
     try:
         print(f"Endpoint /productos/{codigo} llamado")
-        producto = productos.find_one({"codigo": codigo})
+        producto = obtener_producto_por_codigo(codigo)
         if producto:
             producto['_id'] = str(producto['_id'])
             producto['codigo'] = str(producto['codigo'])

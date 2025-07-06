@@ -6,22 +6,6 @@ from database.conn_database import client_db
 movimientos_bp = Blueprint('movimientos', __name__)
 
 
-{
-  "_id": {
-    "$oid": "68671b47be37dca80a75584f"
-  },
-  "productoId": {
-    "$oid": "68671b47be37dca80a75584d"
-  },
-  "tipo": "entrada",
-  "cantidad": 10,
-  "motivo": "Compra a proveedor",
-  "fecha": {
-    "$date": "2025-07-04T00:07:35.489Z"
-  },
-  "usuario": "admin"
-}
-
 @movimientos_bp.route('/movimientos', methods=['GET'])
 def get_movimientos():
     try:
