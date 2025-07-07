@@ -1,8 +1,12 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from bson import ObjectId
 
 from database.conn_database import client_db
-from models.producto import obtener_productos, obtener_producto_por_codigo
+from models.producto import (
+    obtener_productos,
+    obtener_producto_por_codigo,
+    create_producto
+)
 
 productos_bp = Blueprint('productos', __name__)
 
@@ -44,3 +48,18 @@ def get_producto(codigo):
     except Exception as e:
         print(f"Error en get_producto: {e}")
         return jsonify({"error": str(e)}), 500
+
+@productos_bp.route('/productos', methods=['POST'])
+def agregar_producto():
+        try:
+            
+            if request.is_json:
+                data = request.get_json()
+            else:
+                data = request.form.to_dict()  
+            print("Endpoint /productos POST llamado")
+            create_producto(data)
+            return jsonify({"message": "Producto creado"}), 201
+        except Exception as e:
+            print(f"Error en create_producto: {e}")
+            return jsonify({"error": str(e)}), 500

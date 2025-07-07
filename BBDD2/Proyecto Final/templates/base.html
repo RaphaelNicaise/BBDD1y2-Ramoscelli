@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Sistema de Gestion de Stock{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Sistema de Gestion de Stock</h1>
+        <nav>
+            <a href="/">Inicio</a>
+            <a href="/productos">Productos</a>
+            <a href="/agregarproducto">Agregar Producto</a>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2025 - App | <a href="https://github.com/RaphaelNicaise/BBDD1y2-Ramoscelli/tree/main/BBDD2/Proyecto%20Final " target="_blank">Repositorio</a></p>
+    </footer>
+</body>
+</html>

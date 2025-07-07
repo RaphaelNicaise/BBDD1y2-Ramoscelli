@@ -2,7 +2,11 @@ from flask import Blueprint, jsonify
 from bson import ObjectId
 
 from database.conn_database import client_db
-
+from models.movimiento import (
+    get_movimientos_query,
+    get_movimientos_by_codigo_producto
+)
+ 
 movimientos_bp = Blueprint('movimientos', __name__)
 
 
@@ -10,8 +14,8 @@ movimientos_bp = Blueprint('movimientos', __name__)
 def get_movimientos():
     try:
         print("Endpoint /movimientos llamado")
-        movimientos = client_db["movimientos"]  # Colección de movimientos en la base de datos
-        movimientos_list = list(movimientos.find({}))
+
+        movimientos_list = get_movimientos_query()
         print(f"Se encontraron {len(movimientos_list)} movimientos")
         for movimiento in movimientos_list:
             movimiento['_id'] = str(movimiento['_id'])
@@ -22,12 +26,12 @@ def get_movimientos():
         print(f"Error en get_movimientos: {e}")
         return jsonify({"error": str(e)}), 500
     
-@movimientos_bp.route('/movimientos/<string:producto_id>', methods=['GET'])
-def get_movimientos_by_producto(producto_id):
+@movimientos_bp.route('/movimientos/<string:codigo>', methods=['GET'])
+def get_movimientos_by_producto(codigo):
     try:
-        print(f"Buscando movimientos para el producto con ID: {producto_id}")
-        movimientos = client_db["movimientos"]  # Colección de movimientos en la base de datos
-        movimientos_list = list(movimientos.find({"productoId": ObjectId(producto_id)}))
+        print(f"Buscando movimientos para el producto con : {codigo}")
+        
+        movimientos_list = get_movimientos_by_codigo_producto(codigo)
         if not movimientos_list:
             print("No se encontraron movimientos para este producto")
             return jsonify({"error": "No se encontraron movimientos para este producto"}), 404
