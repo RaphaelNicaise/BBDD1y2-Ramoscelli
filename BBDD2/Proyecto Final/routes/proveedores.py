@@ -1,42 +1,39 @@
-from flask import Blueprint, jsonify
-from bson import ObjectId
+from flask import Blueprint, request, jsonify, redirect, url_for, render_template
 
-from database.conn_database import client_db
+from models import model_proveedor
+from database import conn_database
 
 proveedores_bp = Blueprint('proveedores', __name__)
 
-try:
-    proveedores = client_db["proveedores"]  # Colección de proveedores en la base de datos
-except Exception as e:
-    print(f"Error conectando a la base de datos: {e}")
-    
-    
-
-@proveedores_bp.route('/proveedores', methods=['GET'])
+@proveedores_bp.route('/', methods=['GET'])
 def get_proveedores():
-    try:
-        print("Endpoint /proveedores llamado")
-        proveedores_list = list(proveedores.find({}))
-        print(f"Se encontraron {len(proveedores_list)} proveedores")
-        for proveedor in proveedores_list:
-            proveedor['_id'] = str(proveedor['_id'])
-        return jsonify(proveedores_list), 200
-    except Exception as e:
-        print(f"Error en get_proveedores: {e}")
-        return jsonify({"error": str(e)}), 500 
+    proveedores = model_proveedor.obtener_proveedores(conn_database.client_db)
+    return render_template('proveedores.html', proveedores=proveedores)
+
+@proveedores_bp.route('/agregar', methods=['POST'])
+def agregar_proveedor():
+    nombre = request.form.get('nombre')
+    telefono = request.form.get('telefono')
+    email = request.form.get('email')
+    contacto = request.form.get('contacto')
     
-@proveedores_bp.route('/proveedores/<string:nombre>', methods=['GET'])
-def get_proveedor_by_nombre(nombre):
-    try:
-        print(f"Buscando proveedor con nombre: {nombre}")
-        proveedor = proveedores.find_one({"nombre": nombre})
-        if proveedor:
-            proveedor['_id'] = str(proveedor['_id'])
-            print(f"Proveedor encontrado: {proveedor}")
-            return jsonify(proveedor), 200
-        else:
-            print("Proveedor no encontrado")
-            return jsonify({"error": "Proveedor no encontrado"}), 404
-    except Exception as e:
-        print(f"Error en get_proveedor_by_nombre: {e}")
-        return jsonify({"error": str(e)}), 500
+    if not nombre or not telefono or not email:
+        return jsonify({"error": "Todos los campos son obligatorios"}), 400
+    
+    proveedor = {
+        "nombre": nombre,
+        "telefono": telefono,
+        "email": email,
+        "contacto": contacto
+    }
+    
+    proveedor_id = model_proveedor.insertar_proveedor(conn_database.client_db, proveedor)
+    
+    return redirect(url_for('proveedores.get_proveedores'))
+
+@proveedores_bp.route('/eliminar/<proveedor_id>', methods=['POST'])
+def eliminar_proveedor(proveedor_id):
+    if not model_proveedor.borrar_proveedor(conn_database.client_db, proveedor_id):
+        return jsonify({"error": "Proveedor no encontrado"}), 404
+    
+    return redirect(url_for('proveedores.get_proveedores'))

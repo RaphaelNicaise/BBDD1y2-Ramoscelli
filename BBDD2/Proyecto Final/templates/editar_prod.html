@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Producto{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Editar Producto</h2>
+
+    <form method="POST" action="">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Código</label>
+                <input type="text" name="codigo" class="form-control" value="{{ producto.codigo }}" readonly>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Nombre</label>
+                <input type="text" name="nombre" class="form-control" value="{{ producto.nombre }}" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Categoría</label>
+                <select name="categoria" class="form-select" required>
+                    <option value="Electrónica" {% if producto.categoria == 'Electrónica' %}selected{% endif %}>Electrónica</option>
+                    <option value="Bebidas" {% if producto.categoria == 'Bebidas' %}selected{% endif %}>Bebidas</option>
+                    <option value="Alimentos" {% if producto.categoria == 'Alimentos' %}selected{% endif %}>Alimentos</option>
+                    <option value="Limpieza" {% if producto.categoria == 'Limpieza' %}selected{% endif %}>Limpieza</option>
+                    <option value="Ropa" {% if producto.categoria == 'Ropa' %}selected{% endif %}>Ropa</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Precio</label>
+                <input type="number" name="precio" step="0.01" class="form-control" value="{{ producto.precio }}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Stock Actual</label>
+                <input type="number" name="stockActual" class="form-control" value="{{ producto.stockActual }}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Stock Mínimo</label>
+                <input type="number" name="stockMinimo" class="form-control" value="{{ producto.stockMinimo }}">
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Proveedor</label>
+            <select name="proveedorId" class="form-select">
+                <option value="">-- Seleccionar proveedor --</option>
+                {% for proveedor in proveedores %}
+                    <option value="{{ proveedor._id }}" {% if proveedor._id == producto.proveedorId %}selected{% endif %}>{{ proveedor.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="text-end">
+            <a href="{{ url_for('productos.get_productos') }}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

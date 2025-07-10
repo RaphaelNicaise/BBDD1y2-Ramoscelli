@@ -1,65 +1,71 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, request, jsonify, redirect, url_for, render_template
 from bson import ObjectId
 
-from database.conn_database import client_db
-from models.producto import (
-    obtener_productos,
-    obtener_producto_por_codigo,
-    create_producto
-)
+from models import model_producto, model_proveedor
+from database import conn_database
 
 productos_bp = Blueprint('productos', __name__)
 
-try:
-    productos = client_db["productos"] # Colección de productos en la base de datos
-except Exception as e:
-    print(f"Error conectando a la base de datos: {e}")
-
-@productos_bp.route('/productos', methods=['GET'])
+@productos_bp.route('/', methods=['GET'])
 def get_productos():
-    try:
-        print("Endpoint /productos llamado")
-        productos_list = obtener_productos()
-        print(f"Se encontraron {len(productos_list)} productos")
-        for producto in productos_list:
-            producto['_id'] = str(producto['_id'])
-            if 'proveedorId' in producto:
-                producto['proveedorId'] = str(producto['proveedorId'])
-        return jsonify(productos_list), 200
-    except Exception as e:
-        print(f"Error en get_productos: {e}")
-        return jsonify({"error": str(e)}), 500
+    productos = model_producto.obtener_productos(conn_database.client_db)
+    proveedores = model_proveedor.obtener_proveedores(conn_database.client_db)
+    return render_template('productos.html', productos=productos, proveedores=proveedores)
 
-@productos_bp.route('/productos/<string:codigo>', methods=['GET'])
-def get_producto(codigo):
-    try:
-        print(f"Endpoint /productos/{codigo} llamado")
-        producto = obtener_producto_por_codigo(codigo)
-        if producto:
-            producto['_id'] = str(producto['_id'])
-            producto['codigo'] = str(producto['codigo'])
-            if 'proveedorId' in producto:
-                producto['proveedorId'] = str(producto['proveedorId'])
-            print(f"Producto encontrado: {producto}")
-            return jsonify(producto), 200
-        else:
-            print("Producto no encontrado")
-            return jsonify({"error": "Producto no encontrado"}), 404
-    except Exception as e:
-        print(f"Error en get_producto: {e}")
-        return jsonify({"error": str(e)}), 500
-
-@productos_bp.route('/productos', methods=['POST'])
+@productos_bp.route('/agregar', methods=['POST'])
 def agregar_producto():
-        try:
-            
-            if request.is_json:
-                data = request.get_json()
-            else:
-                data = request.form.to_dict()  
-            print("Endpoint /productos POST llamado")
-            create_producto(data)
-            return jsonify({"message": "Producto creado"}), 201
-        except Exception as e:
-            print(f"Error en create_producto: {e}")
-            return jsonify({"error": str(e)}), 500
+    nombre = request.form.get('nombre')
+    descripcion = request.form.get('descripcion')
+    precio = request.form.get('precio')
+    proveedor_id = request.form.get('proveedor_id')
+    
+    if not nombre or not precio or not proveedor_id:
+        return jsonify({"error": "Todos los campos son obligatorios"}), 400
+    
+    producto = {
+        "nombre": nombre,
+        "descripcion": descripcion,
+        "precio": float(precio),
+        "proveedor_id": int(proveedor_id)
+    }
+    
+    producto_id = model_producto.insertar_producto(conn_database.client_db, producto)
+    
+    return redirect(url_for('productos.get_productos'))
+
+@productos_bp.route('/eliminar/<producto_id>', methods=['POST'])
+def eliminar_producto(producto_id):
+    if not model_producto.borrar_producto(conn_database.client_db, producto_id):
+        return jsonify({"error": "Producto no encontrado"}), 404
+    
+    return redirect(url_for('productos.get_productos'))
+
+@productos_bp.route('/editar/<producto_id>', methods=['GET', 'POST'])
+def editar_producto(producto_id):
+    db = conn_database.client_db
+
+    if request.method == 'POST':
+        nombre = request.form.get('nombre')
+        categoria = request.form.get('categoria')
+        precio = float(request.form.get('precio'))
+        stock_actual = int(request.form.get('stockActual'))
+        stock_minimo = int(request.form.get('stockMinimo'))
+        proveedor_id = request.form.get('proveedorId')
+
+        producto_actualizado = {
+            "nombre": nombre,
+            "categoria": categoria,
+            "precio": precio,
+            "stockActual": stock_actual,
+            "stockMinimo": stock_minimo,
+            "proveedorId": ObjectId(proveedor_id) if proveedor_id else None
+        }
+
+        model_producto.actualizar_producto(db, producto_id, producto_actualizado)
+        return redirect(url_for('productos.get_productos'))
+
+    # GET
+    producto = db.productos.find_one({"_id": ObjectId(producto_id)})
+    proveedores = model_proveedor.obtener_proveedores(db)
+
+    return render_template('editar_prod.html', producto=producto, proveedores=proveedores)

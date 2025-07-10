@@ -1,0 +1,47 @@
+from bson import ObjectId
+
+def obtener_productos(db):
+    """
+    Hace un lookup para devolver directamente el nombre del proveedor ademas del producto
+    """
+    pipeline = [
+    {
+        "$lookup": {
+            "from": "proveedores",           
+            "localField": "proveedorId",     
+            "foreignField": "_id",           
+            "as": "proveedor"
+        }
+    },
+    {
+        "$unwind": {
+            "path": "$proveedor",
+            "preserveNullAndEmptyArrays": True
+        }
+    },
+    {
+        "$addFields": {
+            "proveedorNombre": "$proveedor.nombre"
+        }
+    },
+    {        "$project": {
+            "proveedor": 0
+        }
+    }
+    ]
+    return list(db.productos.aggregate(pipeline))
+ 
+def insert_producto(db, producto):
+    resultado = db.productos.insert_one(producto)
+    return str(resultado.inserted_id)
+
+def borrar_producto(db, producto_id):
+    resultado = db.productos.delete_one({"_id": ObjectId(producto_id)})
+    return resultado.deleted_count > 0
+
+def actualizar_producto(db, producto_id, producto):
+    resultado = db.productos.update_one(
+        {"_id": ObjectId(producto_id)},
+        {"$set": producto}
+    )
+    return resultado.modified_count > 0
