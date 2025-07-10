@@ -45,3 +45,24 @@ def actualizar_producto(db, producto_id, producto):
         {"$set": producto}
     )
     return resultado.modified_count > 0
+
+def modificar_stock(db, producto_id, cantidad):
+    """
+    Modifica el stock de un producto.
+    """
+    
+    producto = db.productos.find_one({"_id": ObjectId(producto_id)})  # Verifica si el producto existe
+    
+    if producto:
+        stock_actual = producto.get("stockActual", 0)
+        nuevo_stock = int(stock_actual) + int(cantidad)
+        
+        if nuevo_stock < 0:
+            return False
+        
+        
+        resultado = db.productos.update_one(
+            {"_id": ObjectId(producto_id)},
+            {"$set": {"stockActual": nuevo_stock}}
+        )
+    return resultado.modified_count > 0

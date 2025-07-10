@@ -3,6 +3,140 @@
 {% block title %}Movimientos{% endblock %}
 
 {% block content %}
-    <h2>Movimientos</h2>
+
+<div class="d-flex" style="position: relative;">
+
     
+    <div class="container mt-4 mb-4" style="flex: 1;">
+        <h2 class="mb-4">Movimientos</h2>
+
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Filtrar por fechas</h5>
+                <form action="{{ url_for('movimientos.get_movimientos') }}" method="GET" class="row g-3">
+                    <div class="col-md-5">
+                        <label for="fecha_inicio" class="form-label">Fecha inicio</label>
+                        <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" 
+                               value="{{ request.args.get('fecha_inicio', '') }}">
+                    </div>
+                    <div class="col-md-5">
+                        <label for="fecha_fin" class="form-label">Fecha fin</label>
+                        <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" 
+                               value="{{ request.args.get('fecha_fin', '') }}">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">Filtrar</button>
+                        {% if request.args.get('fecha_inicio') %}
+                            <a href="{{ url_for('movimientos.get_movimientos') }}" class="btn btn-outline-secondary ms-2">x</a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+
+        <table class="table table-bordered table-striped">
+            <thead class="table-light">
+                <tr>
+                    <th>Producto</th>
+                    <th>Tipo</th>
+                    <th>Cantidad</th>
+                    <th>Motivo</th>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for movimiento in movimientos %}
+                <tr>
+                    <td>{{ movimiento.productoNombre or 'Desconocido' }}</td>
+                    <td>{{ movimiento.tipo }}</td>
+                    <td>{{ movimiento.cantidad }}</td>
+                    <td>{{ movimiento.motivo }}</td>
+                    <td>{{ movimiento.fecha.strftime('%Y-%m-%d %H:%M') if movimiento.fecha else '---' }}</td>
+                    <td>{{ movimiento.usuario }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    
+    <div style="
+        position: fixed;
+        top: 100px;
+        right: 40px;
+        width: 350px;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+        z-index: 999;
+    ">
+        <h5 class="mb-3">Registrar Movimiento</h5>
+        <form action="{{ url_for('movimientos.agregar_movimiento') }}" method="POST">
+            <div class="mb-3">
+                <label for="productoId" class="form-label">Producto</label>
+                <select name="productoId" class="form-select" required>
+                    <option value="">Seleccionar</option>
+                    {% for producto in productos %}
+                        <option value="{{ producto._id }}">{{ producto.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="tipo" class="form-label">Tipo de movimiento</label>
+                <select name="tipo" class="form-select" required>
+                    <option value="entrada">Entrada</option>
+                    <option value="salida">Salida</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="cantidad" class="form-label">Cantidad</label>
+                <input type="number" name="cantidad" class="form-control" min="1" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="motivo" class="form-label">Motivo</label>
+                <input type="text" name="motivo" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label for="usuario" class="form-label">Usuario</label>
+                <input type="text" name="usuario" class="form-control" value="admin">
+            </div>
+
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary">Registrar</button>
+            </div>
+        </form>
+    </div>
+
+</div>
 {% endblock %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form[method="GET"]');
+    
+    form.addEventListener('submit', function(e) {
+        const fechaInicio = document.getElementById('fecha_inicio').value;
+        const fechaFin = document.getElementById('fecha_fin').value;
+        
+        if (fechaInicio && fechaFin) {
+            if (new Date(fechaFin) < new Date(fechaInicio)) {
+                alert('La fecha fin debe ser mayor o igual a la fecha inicio');
+                e.preventDefault();
+                return false;
+            }
+        }
+        
+        return true;
+    });
+});
+</script>
