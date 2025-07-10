@@ -6,7 +6,6 @@
 <div class="container mt-4">
     <h2 class="mb-4">Productos</h2>
 
-    <!-- Tabla de productos -->
     <table class="table table-bordered table-striped">
         <thead class="table-light">
             <tr>
@@ -44,12 +43,10 @@
         </tbody>
     </table>
 
-    <!-- Botón para mostrar formulario de agregar -->
     <button class="btn btn-success mt-3" type="button" data-bs-toggle="collapse" data-bs-target="#formularioProducto">
         Insertar nuevo producto
     </button>
 
-    <!-- Formulario de agregar producto -->
     <div id="formularioProducto" class="collapse mt-3">
         <form action="{{ url_for('productos.agregar_producto') }}" method="POST" class="card card-body">
             <div class="row mb-3">
@@ -78,22 +75,22 @@
             <div class="row mb-3">
                 <div class="col-md-4">
                     <label for="precio" class="form-label">Precio</label>
-                    <input type="number" step="0.01" name="precio" class="form-control">
+                    <input type="number" step="0.01" name="precio" class="form-control" min="0" value="0" required>
                 </div>
                 <div class="col-md-4">
                     <label for="stockActual" class="form-label">Stock Actual</label>
-                    <input type="number" name="stockActual" class="form-control">
+                    <input type="number" name="stockActual" class="form-control" min="0" value="0" required>
                 </div>
                 <div class="col-md-4">
                     <label for="stockMinimo" class="form-label">Stock Mínimo</label>
-                    <input type="number" name="stockMinimo" class="form-control">
+                    <input type="number" name="stockMinimo" class="form-control" min="0" value="0">
                 </div>
             </div>
 
             <div class="mb-3">
                 <label for="proveedorId" class="form-label">Proveedor</label>
                 <select name="proveedorId" class="form-select">
-                    <option value="">-- Seleccionar proveedor --</option>
+                    <option value="">Seleccionar proveedor</option>
                     {% for proveedor in proveedores %}
                         <option value="{{ proveedor._id }}">{{ proveedor.nombre }}</option>
                     {% endfor %}
