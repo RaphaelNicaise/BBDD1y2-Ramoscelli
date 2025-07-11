@@ -112,7 +112,7 @@ def obtener_stock_por_producto(db, producto_id):
     Returns:
         dict: Diccionario con el ID, nombre, stock actual y stock mínimo del producto.
     """
-    stock_producto = db.productos.find_one({"_id": ObjectId(producto_id)}, {"_id":1,"nombre":1,"stockActual": 1, "stock_minimo":1})
+    stock_producto = db.productos.find_one({"_id": ObjectId(producto_id)}, {"_id":1,"nombre":1,"stockActual": 1, "stockMinimo":1})
     if stock_producto:
         return {
             "_id": str(stock_producto["_id"]),
