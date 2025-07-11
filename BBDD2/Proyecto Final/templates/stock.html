@@ -3,5 +3,50 @@
 {% block title %}Stock{% endblock %}
 
 {% block content %}
-    
+<div class="d-flex" style="gap: 30px; align-items: flex-start; margin-top: 30px;">
+    >
+    <div class="flex-grow-1">
+        <h4 class="mb-3">Productos con stock bajo</h4>
+        <div class="d-flex flex-wrap" style="gap: 20px;">
+            {% for producto in productos_faltantes %}
+            <div class="card border-danger" style="width: 250px; background-color: #fff5f5;">
+                <div class="card-body">
+                    <h5 class="card-title text-danger">{{ producto.nombre }}</h5>
+                    <p class="card-text">
+                        <strong>Categoría:</strong> {{ producto.categoria }}<br>
+                        <strong>Stock Actual:</strong> {{ producto.stockActual }}<br>
+                        <strong>Stock Mínimo:</strong> {{ producto.stockMinimo }}<br>
+                        <strong>Proveedor:</strong> {{ producto.proveedorNombre or "Sin proveedor" }}
+                    </p>
+                </div>
+            </div>
+            {% else %}
+            <p class="text-muted">No hay productos con stock bajo.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 🔍 Buscador y resultado -->
+    <div style="width: 300px;">
+        <h4 class="mb-3">Consultar stock</h4>
+        <form method="GET" action="{{ url_for('productos.ver_stock') }}">
+            <select class="form-select mb-3" name="producto_id" onchange="this.form.submit()" required>
+                <option value="">Seleccionar producto</option>
+                {% for producto in productos %}
+                    <option value="{{ producto._id }}" {% if producto_seleccionado and producto_seleccionado._id == producto._id|string %}selected{% endif %}>
+                        {{ producto.nombre }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+
+        {% if producto_seleccionado %}
+        <div class="border p-3 bg-light">
+            <h5>{{ producto_seleccionado.nombre }}</h5>
+            <p><strong>Stock actual:</strong> {{ producto_seleccionado.stockActual }}</p>
+            <p><strong>Stock mínimo:</strong> {{ producto_seleccionado.stockMinimo }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

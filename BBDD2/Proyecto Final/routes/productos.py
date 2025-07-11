@@ -79,3 +79,23 @@ def editar_producto(producto_id):
     proveedores = model_proveedor.obtener_proveedores(db)
 
     return render_template('editar_prod.html', producto=producto, proveedores=proveedores)
+
+
+
+@productos_bp.route('/stock', methods=['GET'])
+def ver_stock():
+    productos_faltantes = model_producto.obtener_productos_con_stock_bajo(conn_database.client_db)
+    productos = model_producto.obtener_productos(conn_database.client_db)
+
+    producto_id = request.args.get('producto_id')
+    producto_seleccionado = None
+
+    if producto_id:
+        producto_seleccionado = model_producto.obtener_stock_por_producto(conn_database.client_db, producto_id)
+
+    return render_template(
+        'stock.html',
+        productos_faltantes=productos_faltantes,
+        productos=productos,
+        producto_seleccionado=producto_seleccionado
+    )

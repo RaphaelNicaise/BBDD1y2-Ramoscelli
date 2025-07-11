@@ -66,3 +66,50 @@ def modificar_stock(db, producto_id, cantidad):
             {"$set": {"stockActual": nuevo_stock}}
         )
     return resultado.modified_count > 0
+
+def obtener_stock_por_producto(db, producto_id):
+    stock_producto = db.productos.find_one({"_id": ObjectId(producto_id)}, {"_id":1,"nombre":1,"stockActual": 1, "stock_minimo":1})
+    if stock_producto:
+        return {
+            "_id": str(stock_producto["_id"]),
+            "nombre": stock_producto.get("nombre"),
+            "stockActual": stock_producto.get("stockActual", 0),
+            "stockMinimo": stock_producto.get("stockMinimo", 0)
+        }
+        
+
+def obtener_productos_con_stock_bajo(db):
+    pipeline = [
+        {
+            "$match": {
+                "$expr": {
+                    "$lt": ["$stockActual", "$stockMinimo"]
+                }
+            }
+        },
+        {
+            "$lookup": {
+                "from": "proveedores",
+                "localField": "proveedorId",
+                "foreignField": "_id",
+                "as": "proveedor"
+            }
+        },
+        {
+            "$unwind": {
+                "path": "$proveedor",
+                "preserveNullAndEmptyArrays": True
+            }
+        },
+        {
+            "$addFields": {
+                "proveedorNombre": "$proveedor.nombre"
+            }
+        },
+        {
+            "$project": {
+                "proveedor": 0
+            }
+        }
+    ]
+    return list(db.productos.aggregate(pipeline))
