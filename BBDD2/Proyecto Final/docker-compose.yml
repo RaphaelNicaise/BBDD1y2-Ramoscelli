@@ -10,7 +10,7 @@ services:
     environment:
       - FLASK_ENV=development
       - FLASK_APP=app.py
-    command: python -m flask run --host=0.0.0.0 --port=5000 --reload 
+    command: python -m flask run --host=0.0.0.0 --port=5000 --reload
 
   mongo:
     image: mongo:7.0

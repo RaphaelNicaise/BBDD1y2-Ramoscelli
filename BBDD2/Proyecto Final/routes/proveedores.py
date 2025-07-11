@@ -12,6 +12,11 @@ def get_proveedores():
 
 @proveedores_bp.route('/agregar', methods=['POST'])
 def agregar_proveedor():
+    """
+    Procesa el formulario para agregar un nuevo proveedor.
+
+    Redirige a la lista de proveedores o retorna error.
+    """
     nombre = request.form.get('nombre')
     telefono = request.form.get('telefono')
     email = request.form.get('email')

@@ -9,7 +9,11 @@ movimientos_bp = Blueprint('movimientos', __name__)
 
 @movimientos_bp.route('/', methods=['GET'])
 def get_movimientos():
-    
+    """
+    Obtiene y muestra los movimientos, permitiendo filtrar por fecha.
+
+    Renderiza movimientos.html 
+    """
     fecha_inicio = request.args.get('fecha_inicio')
     fecha_fin = request.args.get('fecha_fin')
     
@@ -35,6 +39,11 @@ def get_movimientos():
 
 @movimientos_bp.route('/agregar', methods=['GET', 'POST'])
 def agregar_movimiento():
+    """
+    Muestra el formulario para agregar un movimiento y procesa el envío.
+
+    Renderiza agregar_movimiento.html y desp redirige
+    """
     if request.method == 'POST':
         movimiento = request.form.to_dict()
         try:

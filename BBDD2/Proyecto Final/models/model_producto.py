@@ -2,7 +2,13 @@ from bson import ObjectId
 
 def obtener_productos(db):
     """
-    Hace un lookup para devolver directamente el nombre del proveedor ademas del producto
+    Obtiene todos los productos y agrega el nombre del proveedor.
+
+    Args:
+        db: Conexión a la base de datos.
+
+    Returns:
+        list: Lista de productos con el nombre del proveedor.
     """
     pipeline = [
     {
@@ -32,10 +38,30 @@ def obtener_productos(db):
     return list(db.productos.aggregate(pipeline))
  
 def insert_producto(db, producto):
+    """
+    Inserta un nuevo producto en la base de datos.
+
+    Args:
+        db: Conexión a la base de datos.
+        producto (dict): Diccionario con los datos del producto.
+
+    Returns:
+        str: ID del producto insertado.
+    """
     resultado = db.productos.insert_one(producto)
     return str(resultado.inserted_id)
 
 def borrar_producto(db, producto_id):
+    """
+    Elimina un producto de la base de datos.
+
+    Args:
+        db: Conexión a la base de datos.
+        producto_id: ID del producto a eliminar.
+
+    Returns:
+        bool: True si se eliminó correctamente, False en caso contrario.
+    """
     resultado = db.productos.delete_one({"_id": ObjectId(producto_id)})
     return resultado.deleted_count > 0
 
@@ -48,7 +74,15 @@ def actualizar_producto(db, producto_id, producto):
 
 def modificar_stock(db, producto_id, cantidad):
     """
-    Modifica el stock de un producto.
+    Modifica el stock de un producto en la base de datos.
+
+    Args:
+        db: Conexión a la base de datos.
+        producto_id: ID del producto a modificar.
+        cantidad: Cantidad a sumar o restar al stock actual.
+
+    Returns:
+        bool: True si el stock se modificó correctamente, False en caso contrario.
     """
     
     producto = db.productos.find_one({"_id": ObjectId(producto_id)})  # Verifica si el producto existe
@@ -68,6 +102,16 @@ def modificar_stock(db, producto_id, cantidad):
     return resultado.modified_count > 0
 
 def obtener_stock_por_producto(db, producto_id):
+    """
+    Obtiene el stock actual y mínimo de un producto.
+
+    Args:
+        db: Conexión a la base de datos.
+        producto_id: ID del producto.
+
+    Returns:
+        dict: Diccionario con el ID, nombre, stock actual y stock mínimo del producto.
+    """
     stock_producto = db.productos.find_one({"_id": ObjectId(producto_id)}, {"_id":1,"nombre":1,"stockActual": 1, "stock_minimo":1})
     if stock_producto:
         return {
@@ -79,6 +123,15 @@ def obtener_stock_por_producto(db, producto_id):
         
 
 def obtener_productos_con_stock_bajo(db):
+    """
+    Obtiene los productos cuyo stock actual es menor que el stock mínimo y agrega el nombre del proveedor.
+
+    Args:
+        db: Conexión a la base de datos.
+
+    Returns:
+        list: Lista de productos con stock bajo y el nombre del proveedor.
+    """
     pipeline = [
         {
             "$match": {

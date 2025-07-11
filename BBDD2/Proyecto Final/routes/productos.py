@@ -10,12 +10,18 @@ productos_bp = Blueprint('productos', __name__)
 
 @productos_bp.route('/', methods=['GET'])
 def get_productos():
+    
     productos = model_producto.obtener_productos(conn_database.client_db)
     proveedores = model_proveedor.obtener_proveedores(conn_database.client_db)
     return render_template('productos.html', productos=productos, proveedores=proveedores)
 
 @productos_bp.route('/agregar', methods=['POST'])
 def agregar_producto():
+    """
+    Procesa el formulario para agregar un nuevo producto.
+    
+    Redirige a la lista de productos o retorna error.
+    """
     nombre = request.form.get('nombre')
     codigo = request.form.get('codigo')
     precio = request.form.get('precio')
@@ -51,6 +57,14 @@ def eliminar_producto(producto_id):
 
 @productos_bp.route('/editar/<producto_id>', methods=['GET', 'POST'])
 def editar_producto(producto_id):
+    """
+    Muestra el formulario para editar un producto y procesa la actualización.
+
+    Args:
+        producto_id (str): ID del producto a editar.
+        
+    Renderiza editar_prod.html y redirige tras actualizar.
+    """
     db = conn_database.client_db
 
     if request.method == 'POST':
@@ -84,6 +98,11 @@ def editar_producto(producto_id):
 
 @productos_bp.route('/stock', methods=['GET'])
 def ver_stock():
+    """
+    Muestra el estado de stock de los productos y los que tienen stock bajo.
+
+    Renderiza stock.html en prodoctos/stock con productos faltantes y detalles de producto seleccionado.
+    """
     productos_faltantes = model_producto.obtener_productos_con_stock_bajo(conn_database.client_db)
     productos = model_producto.obtener_productos(conn_database.client_db)
 

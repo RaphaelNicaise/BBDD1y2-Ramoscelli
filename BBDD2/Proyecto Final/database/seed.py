@@ -1,8 +1,14 @@
 from bson import ObjectId
 from datetime import datetime
 
-# data inicial cuando se levanta el contenedor mongo por primera vez
+
 def seed_data(db):
+    """
+    Inserta datos de ejemplo en la base de datos si todas las colecciones están vacías.
+
+    Args:
+        db: Conexión a la base de datos MongoDB.
+    """
     if db.productos.count_documents({}) == 0 and db.proveedores.count_documents({}) == 0 and db.movimientos.count_documents({}) == 0:
         id_producto = ObjectId()
         id_proveedor = ObjectId()

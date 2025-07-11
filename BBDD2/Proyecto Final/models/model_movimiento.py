@@ -5,7 +5,13 @@ from models import model_producto
 
 def obtener_movimientos(db):
     """
-    Hace un lookup para devolver directamente el nombre del producto ademas del movimiento
+    Obtiene todos los movimientos y agrega el nombre del producto
+
+    Args:
+        db: Conexión a la base de datos.
+
+    Returns:
+        list: Lista de movimientos con el nombre del producto.
     """
     pipeline = [
         {
@@ -35,7 +41,18 @@ def obtener_movimientos(db):
     ]
     return list(db.movimientos.aggregate(pipeline))
     
-def obtener_movimiento_por_fecha(db, fecha_inicio, fecha_fin):    
+def obtener_movimiento_por_fecha(db, fecha_inicio, fecha_fin):
+    """ 
+    Obtiene los movimientos entre dos fechas y agrega el nombre del producto.
+
+    Args:
+        db: Conexión a la base de datos.
+        fecha_inicio: Fecha de inicio (datetime).
+        fecha_fin: Fecha de fin (datetime).
+
+    Returns:
+        list: Lista de movimientos con el nombre del producto.
+    """
     pipeline = [
         {
             "$match": {
@@ -75,7 +92,17 @@ def obtener_movimiento_por_fecha(db, fecha_inicio, fecha_fin):
     
 def insertar_movimiento(db, movimiento):
     """
-    Inserta un nuevo movimiento en la colección de movimientos.
+    Inserta un nuevo movimiento en la base de datos y actualiza el stock del producto.
+
+    Args:
+        db: Conexión a la base de datos.
+        movimiento (dict): Diccionario con los datos del movimiento.
+
+    Raises:
+        ValueError: Si el campo 'productoId' no está presente en el movimiento.
+
+    Returns:
+        str: ID del movimiento insertado.
     """
     if not movimiento.get("productoId"):
         raise ValueError("El campo 'productoId' es obligatorio")
